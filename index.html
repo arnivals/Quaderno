@@ -120,7 +120,7 @@ input[aria-invalid="true"]{color:var(--bacca)}
 
 /* Prospetto: mese per mese */
 .sez{margin-top:36px}
-.sez>h2{font:600 25px/1.2 var(--serif)}
+.sez>h2{font:600 25px/1.2 var(--serif);margin-bottom:12px}
 .sez>.sub{color:var(--muted);margin:4px 0 14px;max-width:62ch}
 .tw{background:var(--card);border-radius:22px;padding:6px 14px 8px}
 .pt{width:100%;border-collapse:collapse}
@@ -130,13 +130,14 @@ input[aria-invalid="true"]{color:var(--bacca)}
 .pt th:first-child{text-align:left}
 .pt tbody th{font-weight:500}
 .pt td.p{font-weight:700;font-size:17px}
-.uw{display:inline-flex;align-items:center;gap:6px}
 .eu{position:relative;display:block}
 .eu::after{content:"€";position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .eu input{width:100%;text-align:right;padding:8px 28px 8px 10px;border:1px solid var(--line);border-radius:12px;background:var(--field);font-variant-numeric:tabular-nums}
 .eu input:hover{border-color:var(--muted)}
-.uw .eu{width:124px}
-tr.mod .eu input{border-color:var(--bacca);background:var(--bacca-wash)}
+.pt .eu{display:inline-block;width:124px;vertical-align:middle}
+.pt tbody th{letter-spacing:.04em}
+.pt .c-x{width:34px;padding-left:0;padding-right:0}
+.eu.mod input{border-color:var(--bacca);background:var(--bacca-wash)}
 .rst{display:inline-grid;place-items:center;width:30px;height:30px;border:0;border-radius:50%;background:none;color:var(--bacca)}
 .rst:hover{background:var(--bacca-wash)}
 tr:not(.mod) .rst{visibility:hidden}
@@ -212,7 +213,7 @@ dialog::backdrop{background:rgba(12,18,15,.5)}
 :root{--pri:var(--ink);--su-pri:var(--on);--giallo:#f5d849;
   --c0:#2a78d6;--c1:#eb6834;--c2:#1baf7a;--c3:#eda100;--c4:#e87ba4;--c5:#008300;--c6:#4a3aa7;--c7:#e34948;--cx:#9aa39d}
 @media (prefers-color-scheme:dark){:root:not([data-theme]){--c0:#3987e5;--c1:#d95926;--c2:#199e70;--c3:#c98500;--c4:#d55181;--c5:#008300;--c6:#9085e9;--c7:#e66767;--cx:#6f7a74}}
-:root[data-theme="dark"],:root[data-theme="blu"],:root[data-theme="carbone"]{--c0:#3987e5;--c1:#d95926;--c2:#199e70;--c3:#c98500;--c4:#d55181;--c5:#008300;--c6:#9085e9;--c7:#e66767;--cx:#6f7a74}
+:root[data-theme="dark"],:root[data-theme="blu"],:root[data-theme="carbone"],:root[data-theme="borgogna"]{--c0:#3987e5;--c1:#d95926;--c2:#199e70;--c3:#c98500;--c4:#d55181;--c5:#008300;--c6:#9085e9;--c7:#e66767;--cx:#6f7a74}
 :root[data-theme="blu"]{                      /* blu notte: quasi grigio, con appena una punta di blu */
   --bg:#0e1219; --card:#161c27; --soft:#202836; --field:#11161e;
   --ink:#e2e6ee; --muted:#929cad; --line:#2b3442;
@@ -230,6 +231,17 @@ dialog::backdrop{background:rgba(12,18,15,.5)}
   --pri:#f5d849; --su-pri:#111112;
   color-scheme:dark;
 }
+:root[data-theme="borgogna"]{                 /* borgogna: vino scuro, pulsanti bordeaux, linee del grafico color cipria */
+  --bg:#160b0f; --card:#26141b; --soft:#381f28; --field:#1b0e13;
+  --ink:#f5ecea; --muted:#bca3a8; --line:#4a2b34;
+  --verde-t:#9dd6b6; --verde-wash:#3d1524; --serie:#e2a694;
+  --bacca:#ff9f87; --bacca-wash:#45221b;
+  --on:#160b0f; --ombra:0 1px 2px rgba(0,0,0,.5);
+  --pri:#a3264a; --su-pri:#fff4f0;
+  color-scheme:dark;
+}
+:root[data-theme="borgogna"] body{background:radial-gradient(880px 430px at 88% -90px,#4d1529 0%,rgba(77,21,41,0) 70%) no-repeat,var(--bg)}
+:root[data-theme="borgogna"] .bx-p{background:linear-gradient(135deg,#5a1830,#3a1322)}
 .btn.primary{background:var(--pri);border-color:var(--pri);color:var(--su-pri)}
 
 /* titolo: "morbido" giallo; sul tema chiaro ha un contorno scuro, altrimenti non si leggerebbe */
@@ -308,7 +320,12 @@ code{font:13px var(--mono);background:var(--soft);padding:2px 6px;border-radius:
 .pf-h h2{font:600 26px/1.2 var(--serif)}
 .pf-top{display:grid;grid-template-columns:minmax(0,1fr) 168px minmax(190px,300px);gap:18px 30px;align-items:center;margin-bottom:18px}
 .pf-val .lbl{color:var(--muted)}
-.pf-val .pic{margin-top:6px}
+.pf .hero{font-size:clamp(36px,4.4vw,46px);margin:2px 0 10px}
+.pf-gu{font:700 30px/1.15 var(--sans);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.pf-pc{display:inline-block;margin-top:8px;padding:3px 14px;border-radius:999px;background:var(--soft);font:700 21px/1.35 var(--sans);font-variant-numeric:tabular-nums}
+.pf-gu.su,.pf-pc.su{color:var(--verde-t)} .pf-gu.giu,.pf-pc.giu{color:var(--bacca)}
+.pf-pc.su{background:var(--verde-wash)} .pf-pc.giu{background:var(--bacca-wash)}
+.pf-val .pic{margin-top:10px}
 .pf-vuoto{color:var(--muted);max-width:72ch}
 .torta{position:relative;width:168px}
 .torta svg{display:block;width:100%;height:auto}
@@ -392,6 +409,14 @@ i.c0{background:var(--c0)} i.c1{background:var(--c1)} i.c2{background:var(--c2)}
 .pin:disabled{opacity:.6}
 .pinmsg{min-height:1.5em;color:var(--bacca);font-weight:500}
 .pinnota{font-size:13px;color:var(--muted);margin-top:6px}
+.conpad{gap:6px;background:none;padding-top:8px}
+.conpad .luc{width:28px;height:28px}
+.conpad .pin{max-width:230px;padding:2px 0 2px 14px;border-color:transparent;background:none;outline:0;caret-color:transparent;pointer-events:none}
+.conpad .pinmsg{min-height:1.4em;font-size:14px}
+.tast{display:grid;grid-template-columns:repeat(3,76px);gap:12px 22px;justify-content:center;margin:2px 0 12px}
+.tast button{display:grid;place-items:center;height:64px;padding:0;border:0;border-radius:24px;background:var(--card);color:var(--ink);font:600 26px/1 var(--sans);font-variant-numeric:tabular-nums;-webkit-user-select:none;user-select:none}
+.tast button:active{background:var(--soft)}
+.tast .canc{background:none;color:var(--muted)}
 
 /* impostazioni */
 .blk a{color:var(--ink)}
@@ -583,10 +608,16 @@ i.c0{background:var(--c0)} i.c1{background:var(--c1)} i.c2{background:var(--c2)}
   .sez>h2{font-size:22px}
   .sez>.sub{font-size:14px}
   .tw{padding:4px 6px 6px;border-radius:18px}
-  .pt .c-e,.pt .c-r{display:none}
-  .pt th,.pt td{padding:8px 6px}
+  .pt{table-layout:fixed}
+  .pt .c-r,.pt .c-x{display:none}
+  .pt th,.pt td{padding:6px 4px}
+  .pt thead th{padding-top:10px}
+  .pt th:first-child{width:46px;padding-left:8px}
+  .pt td.p,.pt thead th:nth-child(5){width:33%;padding-right:8px}
   .pt td.p{font-size:16px}
-  .uw .eu{width:104px}
+  .pt .eu{display:block;width:100%}
+  .pt .eu::after{display:none}
+  .pt .eu input{padding:9px 9px}
   .eu input{padding-top:9px;padding-bottom:9px}
 
   /* conti al volo */
@@ -602,14 +633,15 @@ i.c0{background:var(--c0)} i.c1{background:var(--c1)} i.c2{background:var(--c2)}
 
   /* ReesparmioFoil */
   body[data-vista="reesparmiofoil"] .vh{position:relative;display:block;padding-right:0}
-  body[data-vista="reesparmiofoil"] .vh .sub{margin-top:6px}
+  body[data-vista="reesparmiofoil"] .vh .sub{margin-top:6px;color:var(--bacca)}
   #btnPrezzi{position:absolute;right:0;top:3px;padding:6px 13px;font-size:14px}
   .pf{margin-top:10px;padding:18px 14px 12px;border-radius:22px}
   .pf-h h2{font-size:22px}
   .pf-top{grid-template-columns:108px minmax(0,1fr);gap:12px 16px;margin-bottom:10px}
   .pf-top .pf-val{grid-column:1/-1}
-  .pf .hero{font-size:36px}
-  .pf-val .delta{font-size:15px}
+  .pf .hero{font-size:33px;margin-bottom:8px}
+  .pf-gu{font-size:26px}
+  .pf-pc{font-size:19px}
   .torta{width:108px}
   .leg{font-size:13.5px}
   .pf-az{margin-top:12px}
@@ -811,11 +843,11 @@ const pad = n => String(n).padStart(2, '0');
 const isoGiorno = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const oggi = () => isoGiorno(new Date());
 
-const TEMI = ['auto', 'light', 'dark', 'blu', 'carbone'];
+const TEMI = ['auto', 'light', 'dark', 'blu', 'carbone', 'borgogna'];
 function pfVuoto(id, nome) { return { id, nome, strumenti: [], movimenti: [] }; }
 function invVuoto() { return { portafogli: [pfVuoto('a', 'ReesparmioFoil')], prezzi: {}, aggiornati: 0, foglio: '', ponte: '' }; }
 function vuoto() {
-  return { versione: 3, base: { patrimonio: 0, entrata: 170000, spese: 0, aggiornato: null }, mesi: {}, conti: { voci: [] }, note: [], inv: invVuoto(), ferie: {}, cassaforte: null, ultimoBackup: null, tema: 'auto' };
+  return { versione: 3, base: { patrimonio: 0, entrata: 170000, spese: 0, aggiornato: null }, mesi: {}, entrate: {}, conti: { voci: [] }, note: [], inv: invVuoto(), ferie: {}, cassaforte: null, ultimoBackup: null, tema: 'auto' };
 }
 function normalizza(o) {
   const b = vuoto();
@@ -835,6 +867,9 @@ function normalizza(o) {
   }
   if (o.mesi && typeof o.mesi === 'object') {
     for (const k of Object.keys(o.mesi)) if (/^\d{4}-\d{2}$/.test(k) && int(o.mesi[k]) != null) b.mesi[k] = o.mesi[k];
+  }
+  if (o.entrate && typeof o.entrate === 'object') {            // entrate diverse dal solito, mese per mese
+    for (const k of Object.keys(o.entrate)) if (/^\d{4}-\d{2}$/.test(k) && int(o.entrate[k]) != null) b.entrate[k] = o.entrate[k];
   }
   const voce = (r, segno) => ({ id: str(r.id, 40) || uid(), voce: str(r.voce, 60), importo: int(r.importo) || 0, segno: (segno || r.segno) > 0 ? 1 : -1, mese: /^\d{4}-\d{2}$/.test(r.mese) ? r.mese : '' });
   const cc = o.conti && typeof o.conti === 'object' ? o.conti : {}, soloOggetti = l => (Array.isArray(l) ? l.filter(r => r && typeof r === 'object') : []);
@@ -972,16 +1007,16 @@ function prossimi27(n) {
 function calcola() {
   let p = db.base.patrimonio;
   return prossimi27(12).map(m => {
-    const mod = Object.prototype.hasOwnProperty.call(db.mesi, m.ym);
-    const u = mod ? db.mesi[m.ym] : db.base.spese;
-    p += db.base.entrata - u;
-    return { d: m.d, ym: m.ym, mod, u, r: db.base.entrata - u, p };
+    const modU = Object.prototype.hasOwnProperty.call(db.mesi, m.ym), modE = Object.prototype.hasOwnProperty.call(db.entrate, m.ym);
+    const u = modU ? db.mesi[m.ym] : db.base.spese, e = modE ? db.entrate[m.ym] : db.base.entrata;
+    p += e - u;
+    return { d: m.d, ym: m.ym, mod: modU || modE, modU, modE, u, e, r: e - u, p };
   });
 }
-const decProspetto = () => ([db.base.patrimonio, db.base.entrata, db.base.spese, ...Object.values(db.mesi)].some(v => v % 100) ? 2 : 0);
+const decProspetto = () => ([db.base.patrimonio, db.base.entrata, db.base.spese, ...Object.values(db.mesi), ...Object.values(db.entrate)].some(v => v % 100) ? 2 : 0);
 function pulisciMesi() {                                     // i mesi già passati non servono più
   const primo = prossimi27(1)[0].ym;
-  for (const k of Object.keys(db.mesi)) if (k < primo) delete db.mesi[k];
+  for (const tab of [db.mesi, db.entrate]) for (const k of Object.keys(tab)) if (k < primo) delete tab[k];
 }
 pulisciMesi();
 ultimoSalvato = JSON.stringify(copia());
@@ -1005,13 +1040,13 @@ function testoAggiornato() {
   return db.base.aggiornato === oggi() ? 'Aggiornato oggi' : 'Aggiornato il ' + dataCorta(daIso(db.base.aggiornato));
 }
 function vProspetto() {
-  const righe = calcola(), dec = decProspetto(), b = db.base;
+  const righe = calcola(), b = db.base;
   const vP = (b.patrimonio === 0 && !b.aggiornato) ? '' : campo(b.patrimonio);
-  return `<header class="vh"><div><h1>Prospetto</h1><p class="sub">Quanto avrai a ogni 27 del mese, per i prossimi 12 mesi.</p></div></header>${avvisoMemoria()}
+  return `<header class="vh"><h1>Prospetto</h1></header>${avvisoMemoria()}
   <section class="base" aria-label="Valori di partenza">
     <label class="bx bx-p"><span class="bl">Patrimonio attuale</span><span class="bi"><input data-base="patrimonio" inputmode="decimal" autocomplete="off" placeholder="20.000" value="${vP}"><i>€</i></span><span class="bh" id="agg">${esc(testoAggiornato())}</span></label>
-    <label class="bx"><span class="bl">Entrata mensile</span><span class="bi"><input data-base="entrata" inputmode="decimal" autocomplete="off" placeholder="0" value="${campo(b.entrata)}"><i>€</i></span><span class="bh">Arriva il 27 di ogni mese</span></label>
-    <label class="bx"><span class="bl">Spese mensili</span><span class="bi"><input data-base="spese" inputmode="decimal" autocomplete="off" placeholder="0" value="${campo(b.spese)}"><i>€</i></span><span class="bh">Valore standard per tutti i mesi</span></label>
+    <label class="bx"><span class="bl">Entrata mensile</span><span class="bi"><input data-base="entrata" inputmode="decimal" autocomplete="off" placeholder="0" value="${campo(b.entrata)}"><i>€</i></span></label>
+    <label class="bx"><span class="bl">Spese mensili</span><span class="bi"><input data-base="spese" inputmode="decimal" autocomplete="off" placeholder="0" value="${campo(b.spese)}"><i>€</i></span></label>
   </section>
   <section class="esito">
     <div><p class="lbl" id="esitoL"></p><p class="hero" id="esitoV"></p><p class="delta" id="esitoD"></p></div>
@@ -1019,30 +1054,33 @@ function vProspetto() {
   </section>
   <section class="sez">
     <h2>Mese per mese</h2>
-    <p class="sub">Ogni riga parte dal patrimonio della riga sopra, aggiunge l'entrata e toglie le uscite. Cambia le uscite del mese che vuoi: le altre restano al valore standard.</p>
     <div class="tw"><table class="pt">
-      <thead><tr><th scope="col">Data</th><th scope="col" class="c-e">Entrata</th><th scope="col">Uscite</th><th scope="col" class="c-r">Messo da parte</th><th scope="col">Patrimonio</th></tr></thead>
-      <tbody>${righe.map(r => `<tr data-ym="${r.ym}"${r.mod ? ' class="mod"' : ''}>
-        <th scope="row">${esc(dataCorta(r.d))}</th>
-        <td class="c-e" data-c="e"></td>
-        <td><span class="uw"><button class="rst" data-act="reset-mese" data-ym="${r.ym}" title="Torna al valore standard" aria-label="Riporta ${esc(meseAnno(r.d))} al valore standard">${ICONA_RST}</button><span class="eu"><input data-mese="${r.ym}" inputmode="decimal" autocomplete="off" aria-label="Uscite di ${esc(meseAnno(r.d))}" value="${campo(r.u)}"></span></span></td>
+      <thead><tr><th scope="col">Mese</th><th scope="col">Entrata</th><th scope="col">Uscite</th><th scope="col" class="c-r">Messo da parte</th><th scope="col">Patrimonio</th><th class="c-x"></th></tr></thead>
+      <tbody>${righe.map(r => `<tr data-ym="${r.ym}">
+        <th scope="row" title="${esc(dataLunga(r.d))}">${MESI_SIGLE[r.d.getMonth()]}</th>
+        <td><span class="eu"><input data-ment="${r.ym}" inputmode="decimal" autocomplete="off" aria-label="Entrata di ${esc(meseAnno(r.d))}" value="${campo(r.e)}"></span></td>
+        <td><span class="eu"><input data-mese="${r.ym}" inputmode="decimal" autocomplete="off" aria-label="Uscite di ${esc(meseAnno(r.d))}" value="${campo(r.u)}"></span></td>
         <td class="c-r" data-c="r"></td>
         <td class="p" data-c="p"></td>
+        <td class="c-x"><button class="rst" data-act="reset-mese" data-ym="${r.ym}" title="Torna ai valori standard" aria-label="Riporta ${esc(meseAnno(r.d))} ai valori standard">${ICONA_RST}</button></td>
       </tr>`).join('')}</tbody>
     </table></div>
-    <p class="sotto"><button class="link" data-act="reset-tutti" id="rstTutti" hidden>Riporta tutti i mesi al valore standard</button></p>
+    <p class="sotto"><button class="link" data-act="reset-tutti" id="rstTutti" hidden>Riporta tutti i mesi ai valori standard</button></p>
   </section>`;
 }
-function aggiornaProspetto(allineaCampi) {
+function aggiornaProspetto(allinea) {                        // allinea: 'entrata' o 'spese' quando cambia il valore standard di quella colonna
   const righe = calcola(), dec = decProspetto(), ult = righe[righe.length - 1];
   for (const r of righe) {
     const tr = main.querySelector(`tr[data-ym="${r.ym}"]`); if (!tr) continue;
     tr.classList.toggle('mod', r.mod);
-    tr.querySelector('[data-c="e"]').textContent = conSegno(db.base.entrata, dec);
     const cr = tr.querySelector('[data-c="r"]'); cr.textContent = conSegno(r.r, dec); cr.classList.toggle('neg', r.r < 0);
     const cp = tr.querySelector('[data-c="p"]'); cp.textContent = eur(r.p, dec); cp.classList.toggle('neg', r.p < 0);
-    const inp = tr.querySelector('input');
-    if (allineaCampi && inp !== document.activeElement) { inp.value = campo(r.u); inp.removeAttribute('aria-invalid'); }
+    for (const [sel, val, mod, std, quale] of [['[data-ment]', r.e, r.modE, db.base.entrata, 'entrata'], ['[data-mese]', r.u, r.modU, db.base.spese, 'spese']]) {
+      const inp = tr.querySelector(sel);
+      inp.parentElement.classList.toggle('mod', mod);
+      inp.placeholder = campo(std);                             // svuotando il campo si torna al valore standard
+      if (allinea === quale && inp !== document.activeElement) { inp.value = campo(val); inp.removeAttribute('aria-invalid'); }
+    }
   }
   const diff = ult.p - db.base.patrimonio, tondo = c => Math.round(c / 100) * 100;
   $('#esitoL').textContent = `Il ${dataLunga(ult.d)} avrai circa`;
@@ -1069,15 +1107,16 @@ function suBase(el) {
   db.base[k] = v;
   if (k === 'patrimonio') db.base.aggiornato = oggi();
   if (k === 'spese') for (const ym of Object.keys(db.mesi)) if (db.mesi[ym] === v) delete db.mesi[ym];
-  salvaPresto(); aggiornaProspetto(k === 'spese');
+  if (k === 'entrata') for (const ym of Object.keys(db.entrate)) if (db.entrate[ym] === v) delete db.entrate[ym];
+  salvaPresto(); aggiornaProspetto(k);
 }
-function suMese(el) {
-  const ym = el.dataset.mese, raw = el.value.trim();
-  if (raw === '') delete db.mesi[ym];
+function suMese(el) {                                        // entrata o uscite di un mese solo
+  const ent = el.dataset.ment !== undefined, ym = ent ? el.dataset.ment : el.dataset.mese, tab = ent ? db.entrate : db.mesi, std = ent ? db.base.entrata : db.base.spese, raw = el.value.trim();
+  if (raw === '') delete tab[ym];
   else {
     const v = leggi(raw, false);
     if (v == null) { el.setAttribute('aria-invalid', 'true'); el.title = 'Scrivi un numero, ad esempio 1.250,50'; return; }
-    if (v === db.base.spese) delete db.mesi[ym]; else db.mesi[ym] = v;
+    if (v === std) delete tab[ym]; else tab[ym] = v;
   }
   el.removeAttribute('aria-invalid'); el.removeAttribute('title');
   salvaPresto(); aggiornaProspetto(false);
@@ -1157,7 +1196,7 @@ function rigaConti(r, primo) {
 function vConti() {
   db.conti.voci = vociPiene();
   const righe = db.conti.voci.concat([voceVuota()]);
-  return `<header class="vh"><div><h1>Conti al volo</h1><p class="sub">Ogni voce nasce come spesa: con il segno la trasformi in un rimborso. Se le dai un mese, compare nei prossimi 6 mesi.</p></div></header>${avvisoMemoria()}
+  return `<header class="vh"><h1>Conti al volo</h1></header>${avvisoMemoria()}
   <div class="conti">
     <section class="lst" id="lst">
       <div class="rows">${righe.map((r, i) => rigaConti(r, righe.length === 1 && i === 0)).join('')}</div>
@@ -1177,8 +1216,7 @@ function aggiornaConti() {
   $('#totD').textContent = spese && rimborsi ? `Spese ${eur(spese, dec)}, rimborsi ${eur(rimborsi, dec)}` : '';
   $('#svLista').hidden = !voci.length;
   const box = $('#resto'); box.textContent = '';
-  if (!voci.length) { const p = document.createElement('p'); p.className = 'muted'; p.textContent = 'Scrivi una voce e il suo importo: il totale si aggiorna da solo.'; box.append(p); }
-  else if (db.base.patrimonio) {
+  if (voci.length && db.base.patrimonio) {
     const d2 = dec || (db.base.patrimonio % 100 ? 2 : 0), p = document.createElement('p'), f = document.createElement('strong');
     f.textContent = eur(db.base.patrimonio + netto, d2); p.append(`Dal patrimonio attuale di ${eur(db.base.patrimonio, d2)} arriveresti a `, f, '.'); box.append(p);
   }
@@ -1348,14 +1386,15 @@ function disegna() {
 /* ---------- Azioni ---------- */
 const azioni = {
   'reset-mese': b => {
-    delete db.mesi[b.dataset.ym]; salva();
-    const inp = main.querySelector(`input[data-mese="${b.dataset.ym}"]`);
-    inp.value = campo(db.base.spese); inp.removeAttribute('aria-invalid'); aggiornaProspetto(false); inp.focus();
+    const ym = b.dataset.ym;
+    delete db.mesi[ym]; delete db.entrate[ym]; salva();
+    for (const [sel, std] of [[`input[data-ment="${ym}"]`, db.base.entrata], [`input[data-mese="${ym}"]`, db.base.spese]]) { const inp = main.querySelector(sel); inp.value = campo(std); inp.removeAttribute('aria-invalid'); }
+    aggiornaProspetto(false); main.querySelector(`input[data-mese="${ym}"]`).focus();
   },
   'reset-tutti': () => {
-    const prima = Object.assign({}, db.mesi);
-    db.mesi = {}; salva(); disegna();
-    avviso('Mesi riportati al valore standard', () => { db.mesi = prima; salva(); disegna(); });
+    const prima = [Object.assign({}, db.mesi), Object.assign({}, db.entrate)];
+    db.mesi = {}; db.entrate = {}; salva(); disegna();
+    avviso('Mesi riportati ai valori standard', () => { [db.mesi, db.entrate] = prima; salva(); disegna(); });
   },
   'via-riga': b => {
     const i = db.conti.voci.findIndex(x => x.id === b.closest('.rg').dataset.id);
@@ -1391,8 +1430,8 @@ const azioni = {
     $('#npTools').classList.toggle('aperto', stileAperto);
   },
   altro: () => {
-    const voci = [['prospetto', 'Prospetto', 'Quanto avrai a ogni 27 del mese'], ['ferie', 'Ferie', 'Giorni, ore, festivi e ponti'], ['impostazioni', 'Impostazioni', 'Drive, prezzi, backup e tema']], qui = rotta().vista;
-    dlg.innerHTML = `<div class="form"><nav class="am" aria-label="Altre sezioni">${voci.map(([v, nome, sotto]) => `<a href="#${v}"${v === qui ? ' aria-current="page"' : ''}>${ICO[v]}<span><strong>${nome}</strong><small>${sotto}</small></span>${ICO.freccia}</a>`).join('')}</nav>
+    const voci = [['prospetto', 'Prospetto'], ['ferie', 'Ferie'], ['impostazioni', 'Impostazioni']], qui = rotta().vista;
+    dlg.innerHTML = `<div class="form"><nav class="am" aria-label="Altre sezioni">${voci.map(([v, nome]) => `<a href="#${v}"${v === qui ? ' aria-current="page"' : ''}>${ICO[v]}<span><strong>${nome}</strong></span>${ICO.freccia}</a>`).join('')}</nav>
       <p class="muted am-stato">${esc(testoStato()[0])}</p></div>`;
     if (!dlg.open) dlg.showModal();
   },
@@ -1405,7 +1444,7 @@ const azioni = {
     const tema = db.tema; cassaforteBlocca(); db = vuoto(); db.tema = tema; aperta = null; salva(); disegna(); avviso('Quaderno svuotato');
   }
 };
-const numerico = t => t.matches && t.matches('[data-base],[data-mese],[data-f="importo"]');
+const numerico = t => t.matches && t.matches('[data-base],[data-mese],[data-ment],[data-f="importo"]');
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (b && azioni[b.dataset.act]) azioni[b.dataset.act](b);
@@ -1413,7 +1452,7 @@ document.addEventListener('click', e => {
 document.addEventListener('input', e => {
   const t = e.target;
   if (t.dataset.base) suBase(t);
-  else if (t.dataset.mese) suMese(t);
+  else if (t.dataset.mese || t.dataset.ment) suMese(t);
   else if (t.dataset.f) suRiga(t);
   else if (t.id === 'nt' || t.id === 'nx') {
     const n = notaAperta(); if (!n) return;
@@ -1427,13 +1466,14 @@ document.addEventListener('focusout', e => {                                 // 
   if (!numerico(t) || t.getAttribute('aria-invalid') === 'true') return;
   if (t.dataset.base) { if (t.value.trim() !== '' || t.dataset.base !== 'patrimonio') t.value = campo(db.base[t.dataset.base]); adatta(t); }
   else if (t.dataset.mese) t.value = campo(Object.prototype.hasOwnProperty.call(db.mesi, t.dataset.mese) ? db.mesi[t.dataset.mese] : db.base.spese);
+  else if (t.dataset.ment) t.value = campo(Object.prototype.hasOwnProperty.call(db.entrate, t.dataset.ment) ? db.entrate[t.dataset.ment] : db.base.entrata);
   else if (t.value.trim() !== '') { const v = leggi(t.value.trim(), false); if (v) t.value = campo(v); }
 });
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter' || e.isComposing) return;
   const t = e.target;
-  if (t.dataset && t.dataset.mese) {
-    const tutti = [...main.querySelectorAll('input[data-mese]')], prox = tutti[tutti.indexOf(t) + 1];
+  if (t.dataset && (t.dataset.mese || t.dataset.ment)) {       // Invio scende lungo la stessa colonna
+    const tutti = [...main.querySelectorAll(t.dataset.mese ? 'input[data-mese]' : 'input[data-ment]')], prox = tutti[tutti.indexOf(t) + 1];
     e.preventDefault(); if (prox) prox.focus(); else t.blur();
   } else if (t.dataset && t.dataset.f) {
     const rg = t.closest('.rg'); e.preventDefault();
@@ -1471,7 +1511,7 @@ const oraBreve = t => new Date(t).toLocaleTimeString('it-IT', { hour: '2-digit',
 const attesa = ms => new Promise(r => setTimeout(r, ms));
 function dbVuoto() {
   const b = db.base;
-  return !b.patrimonio && !b.aggiornato && b.entrata === 170000 && !b.spese && !Object.keys(db.mesi).length && !vociPiene().length
+  return !b.patrimonio && !b.aggiornato && b.entrata === 170000 && !b.spese && !Object.keys(db.mesi).length && !Object.keys(db.entrate).length && !vociPiene().length
     && !db.note.length && !db.inv.portafogli.some(p => p.strumenti.length) && !Object.keys(ferieCompatte()).length && !db.cassaforte;
 }
 
@@ -1757,10 +1797,11 @@ function tortaHtml(l) {
 const cellaPerc = v => (v == null ? '<td class="vuota">–</td>' : `<td class="${classeSegno(v)}">${percSegno(v)}</td>`);
 function boxPf(pf) {
   const c = contiPf(pf);
+  const cg = c.base > 0 ? classeSegno(c.guadagno) : '';
   const testa = `<div class="pf-top"><div class="pf-val"><p class="lbl">Valore totale</p><p class="hero">${euro(c.valore)}</p>
-      <p class="delta ${c.base > 0 ? classeSegno(c.guadagno) : ''}">${c.base > 0 ? `${euroSegno(c.guadagno)} (${percSegno(c.guadagno / c.base * 100)}) sul capitale investito` : (c.l.length ? 'Guadagno non calcolabile finché mancano i prezzi' : 'Ancora nessuno strumento')}</p>
-      ${c.l.length ? `<p class="muted pic">Investiti ${euro(c.investiti)}${c.senzaPrezzo && c.base > 0 ? ` · ${c.senzaPrezzo === 1 ? 'uno strumento è' : c.senzaPrezzo + ' strumenti sono'} senza prezzo e ${c.senzaPrezzo === 1 ? 'vale' : 'valgono'} quanto ${c.senzaPrezzo === 1 ? 'è costato' : 'sono costati'}` : ''}</p>` : ''}</div>${tortaHtml(c.l)}</div>`;
-  if (!c.l.length) return testa + '<p class="pf-vuoto">Aggiungi il primo strumento qui sotto: nome, simbolo, quote e prezzo di carico. Una volta inserito resta com\'è; gli acquisti successivi si registrano come movimenti del PAC.</p>';
+      ${c.base > 0 ? `<p class="pf-gu ${cg}">${euroSegno(c.guadagno)}</p><p class="pf-pc ${cg}">${percSegno(c.guadagno / c.base * 100)}</p>` : (c.l.length ? '<p class="delta">Mancano i prezzi</p>' : '')}
+      ${c.l.length ? `<p class="muted pic">Investiti ${euro(c.investiti)}${c.senzaPrezzo && c.base > 0 ? ` · ${c.senzaPrezzo} senza prezzo` : ''}</p>` : ''}</div>${tortaHtml(c.l)}</div>`;
+  if (!c.l.length) return testa + '<p class="pf-vuoto">Aggiungi il primo strumento qui sotto.</p>';
   if (telefono()) return testa + listaPf(c);
   return testa + `<div class="tsc"><table class="it">
     <thead><tr><th scope="col">Nome</th><th scope="col">Allocation</th><th scope="col">Quote</th><th scope="col">Prezzo di carico</th><th scope="col">Prezzo ora</th><th scope="col">% Day</th><th scope="col">% Month</th><th scope="col">% Year</th><th scope="col">Investiti</th><th scope="col">Guadagno</th><th></th></tr></thead>
@@ -1833,18 +1874,14 @@ function vPf(pf) {
   </section>`;
 }
 function vInvestimenti() {
-  return `<header class="vh"><div><h1>ReesparmioFoil</h1><p class="sub" id="invStato"></p></div><button class="btn" data-act="prezzi" id="btnPrezzi">Aggiorna prezzi</button></header>${avvisoMemoria()}
+  return `<header class="vh"><div><h1>ReesparmioFoil</h1><p class="sub" id="invStato" aria-live="polite" hidden></p></div><button class="btn" data-act="prezzi" id="btnPrezzi">Aggiorna prezzi</button></header>${avvisoMemoria()}
   ${db.inv.portafogli.map(vPf).join('')}
-  ${db.inv.portafogli.length < 2 ? `<form class="fin nuovo-pf" id="fPf" novalidate autocomplete="off"><label class="lungo"><span>Un secondo portafoglio, con un suo totale separato</span><input name="nome" maxlength="40" placeholder="Nome del portafoglio"></label><button class="btn">Crea portafoglio</button><p class="err" data-err hidden></p></form>` : ''}
-  <p class="aiuto">Il simbolo va scritto come su Yahoo Finance, con il suffisso della borsa: <strong>VWCE.DE</strong> per Xetra, <strong>ENI.MI</strong> per Milano, <strong>AAPL</strong> per gli Stati Uniti. I prezzi in altre valute vengono convertiti in euro. % Month e % Year sono le variazioni dell'ultimo mese e degli ultimi dodici mesi.</p>`;
+  ${db.inv.portafogli.length < 2 ? `<form class="fin nuovo-pf" id="fPf" novalidate autocomplete="off"><label class="lungo"><span>Secondo portafoglio</span><input name="nome" maxlength="40" placeholder="Nome del portafoglio"></label><button class="btn">Crea portafoglio</button><p class="err" data-err hidden></p></form>` : ''}`;
 }
-function testoStatoPrezzi() {
-  if (invMsg) return invMsg;
-  if (!ponte()) return 'Per i prezzi dal vivo collega Yahoo Finance nelle Impostazioni. Intanto puoi scriverli a mano.';
-  if (!tickerUsati().length) return 'I prezzi dal vivo arrivano per gli strumenti che hanno un simbolo.';
-  if (!db.inv.aggiornati) return 'Prezzi non ancora scaricati.';
-  const d = new Date(db.inv.aggiornati), oggiStesso = isoGiorno(d) === oggi();
-  return `Prezzi ${oggiStesso ? 'di oggi' : 'del ' + d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' })} alle ${oraBreve(d)}, da Yahoo Finance. Possono avere un ritardo di 15-20 minuti.`;
+function quandoPrezzi() {                                    // sta nel suggerimento del pulsante, non più sotto il titolo
+  if (!db.inv.aggiornati) return '';
+  const d = new Date(db.inv.aggiornati);
+  return `Prezzi ${isoGiorno(d) === oggi() ? 'di oggi' : 'del ' + d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' })} alle ${oraBreve(d)}, da Yahoo Finance`;
 }
 function aggiornaInv(forza) {
   if (!$('#invStato')) return;
@@ -1856,8 +1893,8 @@ function aggiornaInv(forza) {
       sez.querySelector('[data-storico]').innerHTML = storicoPf(pf);
     }
   }
-  $('#invStato').textContent = testoStatoPrezzi();
-  const b = $('#btnPrezzi'); b.disabled = invOccupato; b.textContent = invOccupato ? 'Aggiorno…' : 'Aggiorna prezzi';
+  const st = $('#invStato'); st.textContent = invMsg; st.hidden = !invMsg;      // sotto il titolo compare solo se c'è un problema
+  const b = $('#btnPrezzi'); b.disabled = invOccupato; b.textContent = invOccupato ? 'Aggiorno…' : 'Aggiorna prezzi'; b.title = quandoPrezzi();
 }
 function erroreForm(f, msg, campo) { const e = f.querySelector('[data-err]'); e.textContent = msg; e.hidden = false; if (campo && f.elements[campo]) f.elements[campo].focus(); }
 function inviaForm(f) {
@@ -2034,7 +2071,7 @@ function testoFestivi(y) {
     ${weekend.length ? `<p><span class="et">Cadono nel fine settimana</span> ${elenco(weekend)}.</p>` : ''}
     <p><span class="et">Ponti probabili</span> ${ponti.length ? ponti.sort((a, b) => a.d - b.d).map(x => `<span><b>${esc(g(x.d))}</b> con ${esc(x.n)}</span>`).join(', ') + '.' : 'nessuno quest\'anno.'}</p>
     ${lunghi.length ? `<p><span class="et">Fine settimana lunghi senza ferie</span> ${lunghi.map(x => `<span>${esc(g(x.d))}</span>`).join(', ')}.</p>` : ''}
-    <p class="nota">Pasqua è domenica ${pasqua(y).toLocaleDateString('it-IT', { day: 'numeric', month: 'long' })}. I ponti dipendono dall'azienda: qui trovi i giorni che di solito diventano ponte.</p>`;
+    <p class="nota">Pasqua è domenica ${pasqua(y).toLocaleDateString('it-IT', { day: 'numeric', month: 'long' })}.</p>`;
 }
 /* da telefono la tabella è girata: i mesi scendono, le quattro voci stanno in colonna; in cima quanto resta */
 function tabellaFerieTelefono(anno, meseOra) {
@@ -2059,7 +2096,6 @@ function vFerie() {
       ${MESI_SIGLE.map((m, i) => `<td${i === meseOra ? ' class="ora"' : ''}><input data-fm="${i}" inputmode="decimal" autocomplete="off" aria-label="${nome}, ${m} ${anno}" value="${numFerie(r.m[i])}"></td>`).join('')}
       <td class="rim" data-rim></td></tr>`; }).join('')}</tbody>
   </table></div>`}
-  <p class="aiuto">In <strong>Disponibili</strong> scrivi quanto hai per l'anno; ogni numero che metti in un mese viene tolto da lì. B.O. è in ore, le altre righe in giorni; i mezzi valori si scrivono con la virgola (0,5).</p>
   <section class="festivi">${testoFestivi(anno)}</section>`;
 }
 function aggiornaFerie() {
@@ -2159,36 +2195,46 @@ const pinScrivi = s => { try { localStorage.setItem(PK, JSON.stringify(s)); } ca
 function pinSbagliato() { const s = pinStato(); s.n++; if (s.n >= 5) s.fino = Date.now() + Math.min(15 * 60000, 30000 * Math.pow(2, s.n - 5)); pinScrivi(s); return s; }
 const pinFacile = p => /^(\d)\1{5}$/.test(p) || '0123456789012345'.includes(p) || '9876543210987654'.includes(p);
 const LUCCHETTO = '<svg class="luc" viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><rect x="4.5" y="10.5" width="15" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="15.5" r="1.4" fill="currentColor"/></svg>';
-const campoPin = (id, etichetta) => `<label class="pinl" for="${id}">${etichetta}</label><input class="pin" id="${id}" inputmode="numeric" maxlength="6" autocomplete="off" spellcheck="false" placeholder="••••••" aria-describedby="pinMsg">`;
+const campoPin = (id, etichetta, pad) => `<label class="pinl" for="${id}">${etichetta}</label><input class="pin" id="${id}" ${pad ? 'readonly inputmode="none" tabindex="-1"' : 'inputmode="numeric"'} maxlength="6" autocomplete="off" spellcheck="false" placeholder="••••••" aria-describedby="pinMsg">`;
+/* da telefono il PIN si batte su un tastierino già pronto: nessun campo da toccare, nessuna tastiera da aspettare */
+const ICONA_CANC = svgI('<path d="M9 6h10.5a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H9l-5.5-6Z"/><path d="m12 9.5 5 5M17 9.5l-5 5"/>');
+const tastierino = () => `<div class="tast" role="group" aria-label="Tastierino del PIN">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => `<button type="button" data-act="pin-tasto" data-n="${n}">${n}</button>`).join('')}<span></span><button type="button" data-act="pin-tasto" data-n="0">0</button><button type="button" class="canc" data-act="pin-tasto" data-n="x" aria-label="Cancella l'ultima cifra">${ICONA_CANC}</button></div>`;
+function pinTasto(n) {
+  const el = $('#pin'); if (!el || el.disabled) return;
+  if (el.value.length === 0) $('#pinMsg').textContent = '';
+  el.value = n === 'x' ? el.value.slice(0, -1) : (el.value + n).slice(0, 6);
+  if (el.value.length === 6) sblocca(el.value);
+}
 
 function vCassaforte() {
-  const testa = (sotto, bottoni) => `<header class="vh"><div><h1>Dati</h1><p class="sub">${sotto}</p></div>${bottoni || ''}</header>${avvisoMemoria()}`;
-  if (!cifraturaOk()) return testa('Scheda cifrata.') + '<div class="vuoto"><p>Questo browser non mette a disposizione la cifratura che serve a questa scheda. Aprila da un browser aggiornato e da un indirizzo https.</p></div>';
-  if (cf && cf.cambio) return testa('Scegli il nuovo PIN.') + `<form class="pinbox" id="pinNuovo" autocomplete="off">${LUCCHETTO}
+  const testa = `<header class="vh"><h1>Dati</h1></header>${avvisoMemoria()}`;
+  if (!cifraturaOk()) return testa + '<div class="vuoto"><p>Questo browser non mette a disposizione la cifratura che serve a questa scheda. Aprila da un browser aggiornato e da un indirizzo https.</p></div>';
+  if (cf && cf.cambio) return testa + `<form class="pinbox" id="pinNuovo" autocomplete="off">${LUCCHETTO}
       ${campoPin('pin1', 'Nuovo PIN di 6 cifre')}${campoPin('pin2', 'Ripetilo')}
       <p class="pinmsg" id="pinMsg" aria-live="polite"></p>
       <div class="btns"><button type="button" class="btn quiet" data-act="cf-cambia-no">Annulla</button><button class="btn primary">Cambia PIN</button></div></form>`;
-  if (cf) return `<header class="vh solo-d"><div><h1>Dati</h1><p class="sub">Aperta: scrivi liberamente. Si richiude quando esci dalla pagina, o dopo 5 minuti senza toccarla.</p></div></header>${avvisoMemoria()}
-    <div class="np-head"><div class="np-bar">${barraTesto()}${pulsanteStile()}<span class="sp"></span><span class="muted solo-d">Si salva da sola, cifrata</span>
+  if (cf) return `<header class="vh solo-d"><h1>Dati</h1></header>${avvisoMemoria()}
+    <div class="np-head"><div class="np-bar">${barraTesto()}${pulsanteStile()}<span class="sp"></span>
         <button class="btn ib testo" data-act="cf-cambia"><span class="solo-m">PIN</span><span class="solo-d">Cambia PIN</span></button>
         <button class="btn ib testo" data-act="cf-blocca"><span class="solo-m">${ICO.lucchetto}Chiudi</span><span class="solo-d">Chiudi a chiave</span></button></div>
       <div class="np-tools${stileAperto ? ' aperto' : ''}" id="npTools" role="group" aria-label="Aspetto della pagina">${barraStile(cf.stile, 'cf-')}</div></div>
-      <article class="foglio fc" id="cfFoglio" style="${stileNota(cf.stile)}"><div class="nx rt" id="cfx" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Pagina cifrata" spellcheck="false" data-ph="Scrivi qui quello che vuoi tenere al sicuro. Un trattino e uno spazio a inizio riga fanno partire un elenco.">${cf.doc}</div></article>`;
-  if (!db.cassaforte) return testa('Scheda cifrata: quello che scrivi qui si legge solo con il PIN.') + `<form class="pinbox" id="pinCrea" autocomplete="off">${LUCCHETTO}
+      <article class="foglio fc" id="cfFoglio" style="${stileNota(cf.stile)}"><div class="nx rt" id="cfx" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Pagina cifrata" spellcheck="false" data-ph="Scrivi qui.">${cf.doc}</div></article>`;
+  if (!db.cassaforte) return testa + `<form class="pinbox" id="pinCrea" autocomplete="off">${LUCCHETTO}
       ${campoPin('pin1', 'Scegli un PIN di 6 cifre')}${campoPin('pin2', 'Ripetilo')}
       <p class="pinmsg" id="pinMsg" aria-live="polite"></p>
       <button class="btn primary">Crea la scheda cifrata</button>
-      <p class="pinnota">Il PIN non è salvato da nessuna parte e non si può recuperare: se lo dimentichi, il contenuto di questa scheda è perso.</p></form>`;
-  return testa('Scheda cifrata: si apre con il PIN.') + `<form class="pinbox" id="pinApri" autocomplete="off">${LUCCHETTO}
-      ${campoPin('pin', 'Scrivi il PIN di 6 cifre')}
-      <p class="pinmsg" id="pinMsg" aria-live="polite"></p>
+      <p class="pinnota">Il PIN non si può recuperare: se lo dimentichi, il contenuto di questa scheda è perso.</p></form>`;
+  const pad = telefono();
+  return testa + `<form class="pinbox${pad ? ' conpad' : ''}" id="pinApri" autocomplete="off">${LUCCHETTO}
+      ${campoPin('pin', 'PIN', pad)}
+      <p class="pinmsg" id="pinMsg" aria-live="polite"></p>${pad ? tastierino() : ''}
       <button type="button" class="link" data-act="cf-dimenticato">Ho dimenticato il PIN</button></form>`;
 }
 function attesaPin() {                                       // se ci sono stati troppi errori, blocca il campo fino allo scadere
   const el = $('#pin'), m = $('#pinMsg'); if (!el) return false;
   const resto = pinStato().fino - Date.now();
   clearTimeout(tPin);
-  if (resto <= 0) { if (el.disabled) { el.disabled = false; m.textContent = ''; el.focus(); } return false; }
+  if (resto <= 0) { if (el.disabled) { el.disabled = false; m.textContent = ''; if (!el.readOnly) el.focus(); } return false; }
   el.disabled = true; el.value = '';
   m.textContent = `Troppi tentativi sbagliati. Riprova tra ${resto > 90000 ? Math.ceil(resto / 60000) + ' minuti' : Math.ceil(resto / 1000) + ' secondi'}.`;
   tPin = setTimeout(attesaPin, 1000);
@@ -2197,7 +2243,7 @@ function attesaPin() {                                       // se ci sono stati
 function dopoCassaforte() {
   if (cf && !cf.cambio) { rtVuoto($('#cfx')); cfTocco(); return; }
   if ($('#pin') && attesaPin()) return;
-  const primo = $('#pin') || $('#pin1'); if (primo) primo.focus();
+  const primo = $('#pin') || $('#pin1'); if (primo && !primo.readOnly) primo.focus();
 }
 async function sblocca(pin) {
   if (attesaPin()) return;
@@ -2219,7 +2265,7 @@ async function sblocca(pin) {
     const s = pinSbagliato();
     if (!$('#pin')) return;
     el.disabled = false; el.value = '';
-    if (!attesaPin()) { m.textContent = 'PIN sbagliato.' + (s.n >= 3 ? ` Ancora ${5 - s.n === 1 ? 'un tentativo' : 5 - s.n + ' tentativi'} prima di una pausa.` : ''); el.focus(); }
+    if (!attesaPin()) { m.textContent = 'PIN sbagliato.' + (s.n >= 3 ? ` Ancora ${5 - s.n === 1 ? 'un tentativo' : 5 - s.n + ' tentativi'} prima di una pausa.` : ''); if (!el.readOnly) el.focus(); }
   }
 }
 async function pinDaModulo(f) {
@@ -2242,6 +2288,7 @@ async function pinDaModulo(f) {
 
 Object.assign(azioni, {
   'cf-font': b => stileCf('font', b), 'cf-dim': b => stileCf('dim', b), 'cf-carta': b => stileCf('carta', b), 'cf-inch': b => stileCf('inch', b),
+  'pin-tasto': b => pinTasto(b.dataset.n),
   'cf-blocca': async () => { await cfSalva(); cassaforteBlocca(); disegna(); },
   'cf-cambia': () => { if (cf) { cf.cambio = true; disegna(); } },
   'cf-cambia-no': () => { if (cf) { delete cf.cambio; disegna(); } },
@@ -2268,6 +2315,10 @@ document.addEventListener('submit', e => {
   else if (f.id === 'pinApri') e.preventDefault();
 });
 document.addEventListener('pointerdown', () => { if (cf) cfTocco(); });
+document.addEventListener('keydown', e => {                   // con il tastierino a schermo valgono anche i tasti veri
+  const el = $('#pin'); if (!el || !el.readOnly || e.ctrlKey || e.metaKey || e.altKey) return;
+  if (/^\d$/.test(e.key)) pinTasto(e.key); else if (e.key === 'Backspace') pinTasto('x');
+});
 window.addEventListener('pagehide', () => { if (cf) cfSalva(); });
 
 /* ---------- Allegati PDF: i file stanno nella cartella "allegati" su Drive, nei dati resta solo il collegamento ---------- */
@@ -2421,7 +2472,7 @@ async function provaPonte(indirizzo) {
 }
 function vImpostazioni() {
   const due = (fondo, accento) => `linear-gradient(135deg,${fondo} 50%,${accento} 50%)`;      // nel pallino: il fondo del tema e il suo colore d'accento
-  const temi = { auto: ['Come il sistema', ''], light: ['Chiaro', due('#ecf1ea', '#1f8566')], dark: ['Bosco', due('#1b2420', '#3fa886')], blu: ['Blu notte', due('#161c27', '#7c9bcc')], carbone: ['Carbone', due('#1b1b1c', '#f5d849')] };
+  const temi = { auto: ['Come il sistema', ''], light: ['Chiaro', due('#ecf1ea', '#1f8566')], dark: ['Bosco', due('#1b2420', '#3fa886')], blu: ['Blu notte', due('#161c27', '#7c9bcc')], carbone: ['Carbone', due('#1b1b1c', '#f5d849')], borgogna: ['Borgogna', due('#26141b', '#a3264a')] };
   return `<header class="vh"><h1>Impostazioni</h1></header>${avvisoMemoria()}
   <section class="blk"><h2>Google Drive</h2><div id="drBox"></div></section>
   <section class="blk"><h2>Prezzi da Yahoo Finance</h2><div id="yfBox"></div></section>
@@ -2434,7 +2485,6 @@ function vImpostazioni() {
     <p class="btns"><button class="btn" data-act="esporta">Esporta una copia</button><button class="btn" data-act="importa">Ripristina da una copia</button></p>
   </section>
   <section class="blk"><h2>Aspetto</h2>
-    <p>Un tema chiaro e tre scuri: Bosco, Blu notte e Carbone.</p>
     <div class="temi" role="group" aria-label="Tema">${Object.keys(temi).map(v => `<button data-act="tema" data-v="${v}" aria-pressed="${db.tema === v}">${temi[v][1] ? `<i style="background:${temi[v][1]}"></i>` : '<i class="meta"></i>'}${temi[v][0]}</button>`).join('')}</div>
   </section>
   <section class="blk"><h2>Svuota il quaderno</h2>
