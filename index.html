@@ -154,7 +154,7 @@ tr:not(.mod) .rst{visibility:hidden}
 .rg .v:hover{border-color:var(--muted)}
 .rg .x{width:30px;height:30px;border:0;border-radius:50%;background:none;color:var(--muted);font-size:20px;line-height:1;padding:0}
 .rg .x:hover{background:var(--soft);color:var(--ink)}
-.rg:last-child .x{visibility:hidden}
+.rg.vuota .x{visibility:hidden}
 .lt{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
 .lt strong{font:700 30px/1.2 var(--sans);letter-spacing:-.02em;white-space:nowrap}
 .lf{margin-top:6px;min-height:24px;font-size:14px}
@@ -295,7 +295,17 @@ code{font:13px var(--mono);background:var(--soft);padding:2px 6px;border-radius:
 /* conti al volo: un elenco solo, e i prossimi 6 mesi */
 .conti{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
 .lst h2::before{display:none}
-.rg{grid-template-columns:34px minmax(0,1fr) 108px 124px 30px}
+.rg{grid-template-columns:26px 34px minmax(0,1fr) 108px 100px 30px}
+.ck{display:grid;place-items:center;width:26px;height:26px;padding:0;border:1.5px solid var(--muted);border-radius:8px;background:none;color:transparent}
+.ck:hover{border-color:var(--ink)}
+.ck[aria-pressed="true"]{border-color:var(--pri);background:var(--pri);color:var(--su-pri)}
+.rg.off .v,.rg.off .eu,.rg.off select,.rg.off .sg{opacity:.45}
+.rg.off .v{text-decoration:line-through}
+.rg.vuota .ck,.rg.vuota .sg{opacity:.3}
+.rg select.nm{color:var(--muted)}
+.lst .lt{margin-top:0;padding-top:0;border-top:0}
+.lst .lf{min-height:0;margin:2px 0 16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.lst .sotto{min-height:0;padding-top:4px}
 .sg{width:34px;height:34px;padding:0;border-radius:50%;border:1px solid var(--line);font:700 19px/1 var(--sans)}
 .sg.meno{color:var(--bacca);border-color:var(--bacca);background:var(--bacca-wash)}
 .sg.piu{color:var(--verde-t);border-color:var(--verde-t);background:var(--verde-wash)}
@@ -303,16 +313,15 @@ code{font:13px var(--mono);background:var(--soft);padding:2px 6px;border-radius:
 .rg select:hover{border-color:var(--muted)}
 .lf{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .lst .resto{margin-top:12px;padding:13px 16px;border-radius:16px}
-.m6{padding:11px 0}
+.m6{padding:10px 0}
 .m6+.m6{border-top:1px solid var(--line)}
-.m6 h3{font:600 15px/1.4 var(--sans);margin:0 0 3px}
-.m6 ul{list-style:none;margin:0;padding:0}
+.m6 ul{list-style:none;margin:3px 0 0;padding:0;font-size:15px;color:var(--muted)}
 .m6 li,.m6t{display:flex;justify-content:space-between;gap:14px}
 .m6 li span:first-child{min-width:0;overflow-wrap:anywhere}
 .m6 .su{color:var(--verde-t)}
-.m6t{font-weight:600;margin-top:3px}
-.m6.niente h3{font-weight:500;color:var(--muted)}
-.m6.niente p{font-size:14px}
+.m6t{font-weight:700;letter-spacing:.03em}
+.m6t strong{letter-spacing:0}
+.m6.niente .m6t,.m6.niente .m6t strong{font-weight:500;color:var(--muted)}
 
 /* ReesparmioFoil */
 .pf{background:var(--card);border-radius:24px;padding:22px 22px 14px;margin-top:14px}
@@ -624,12 +633,15 @@ i.c0{background:var(--c0)} i.c1{background:var(--c1)} i.c2{background:var(--c2)}
   .conti{grid-template-columns:minmax(0,1fr);gap:12px}
   .lst{padding:16px 14px 14px;border-radius:20px}
   .lst h2{font-size:21px;margin-bottom:8px}
-  .rg{grid-template-columns:38px minmax(0,1fr) 112px 30px;gap:6px;margin-bottom:14px}      /* sopra la voce per intero, sotto mese e importo */
-  .rg .sg{grid-area:1/1} .rg .v{grid-area:1/2/2/4} .rg .x{grid-area:1/4}
-  .rg select{grid-area:2/2} .rg .eu{grid-area:2/3}
+  .rg{grid-template-columns:30px 36px minmax(0,1fr) 112px 30px;gap:6px;margin-bottom:14px}      /* sopra la voce per intero, sotto mese e importo */
+  .rg .ck{grid-area:1/1;width:30px;height:30px} .rg .sg{grid-area:1/2} .rg .v{grid-area:1/3/2/5} .rg .x{grid-area:1/5}
+  .rg select{grid-area:2/3} .rg .eu{grid-area:2/4}
+  .rg.vuota:not(.ap) select,.rg.vuota:not(.ap) .eu{display:none}       /* le righe ancora vuote occupano una riga sola finché non le tocchi */
+  .rg.vuota:not(.ap){margin-bottom:8px}
   .rg .v,.rg select{padding-top:9px;padding-bottom:9px}
-  .sg{width:38px;height:38px}
-  .lt strong{font-size:26px}
+  .sg{width:36px;height:36px}
+  .lt strong{font-size:28px}
+  .lst .lf{flex-direction:column;gap:1px;margin-bottom:14px;padding-bottom:12px}
 
   /* ReesparmioFoil */
   body[data-vista="reesparmiofoil"] .vh{position:relative;display:block;padding-right:0}
@@ -871,7 +883,7 @@ function normalizza(o) {
   if (o.entrate && typeof o.entrate === 'object') {            // entrate diverse dal solito, mese per mese
     for (const k of Object.keys(o.entrate)) if (/^\d{4}-\d{2}$/.test(k) && int(o.entrate[k]) != null) b.entrate[k] = o.entrate[k];
   }
-  const voce = (r, segno) => ({ id: str(r.id, 40) || uid(), voce: str(r.voce, 60), importo: int(r.importo) || 0, segno: (segno || r.segno) > 0 ? 1 : -1, mese: /^\d{4}-\d{2}$/.test(r.mese) ? r.mese : '' });
+  const voce = (r, segno) => Object.assign({ id: str(r.id, 40) || uid(), voce: str(r.voce, 60), importo: int(r.importo) || 0, segno: (segno || r.segno) > 0 ? 1 : -1, mese: /^\d{4}-\d{2}$/.test(r.mese) ? r.mese : '' }, r.off === true ? { off: true } : {});   // off: non conta nel totale
   const cc = o.conti && typeof o.conti === 'object' ? o.conti : {}, soloOggetti = l => (Array.isArray(l) ? l.filter(r => r && typeof r === 'object') : []);
   b.conti.voci = soloOggetti(cc.voci).map(r => voce(r))                       // le due liste di prima confluiscono in un elenco solo
     .concat(soloOggetti(cc.uscite).map(r => voce(r, -1)), soloOggetti(cc.entrate).map(r => voce(r, 1)))
@@ -948,7 +960,7 @@ function carica() {
   } catch (e) { soloMemoria = true; }
   return vuoto();
 }
-const vociPiene = () => db.conti.voci.filter(r => r.voce.trim() || r.importo);
+const vociPiene = () => db.conti.voci.filter(r => r.voce.trim() || r.importo);      // le righe lasciate vuote non si salvano
 function ferieCompatte() {                                   // nel salvataggio restano solo le righe con qualcosa dentro
   const out = {};
   for (const anno of Object.keys(db.ferie)) for (const [k] of FERIE_RIGHE) {
@@ -1044,9 +1056,9 @@ function vProspetto() {
   const vP = (b.patrimonio === 0 && !b.aggiornato) ? '' : campo(b.patrimonio);
   return `<header class="vh"><h1>Prospetto</h1></header>${avvisoMemoria()}
   <section class="base" aria-label="Valori di partenza">
-    <label class="bx bx-p"><span class="bl">Patrimonio attuale</span><span class="bi"><input data-base="patrimonio" inputmode="decimal" autocomplete="off" placeholder="20.000" value="${vP}"><i>€</i></span><span class="bh" id="agg">${esc(testoAggiornato())}</span></label>
-    <label class="bx"><span class="bl">Entrata mensile</span><span class="bi"><input data-base="entrata" inputmode="decimal" autocomplete="off" placeholder="0" value="${campo(b.entrata)}"><i>€</i></span></label>
-    <label class="bx"><span class="bl">Spese mensili</span><span class="bi"><input data-base="spese" inputmode="decimal" autocomplete="off" placeholder="0" value="${campo(b.spese)}"><i>€</i></span></label>
+    <label class="bx bx-p"><span class="bl">Patrimonio attuale</span><span class="bi"><input data-base="patrimonio" inputmode="decimal" autocomplete="off" value="${vP}"><i>€</i></span><span class="bh" id="agg">${esc(testoAggiornato())}</span></label>
+    <label class="bx"><span class="bl">Entrata mensile</span><span class="bi"><input data-base="entrata" inputmode="decimal" autocomplete="off" value="${campo(b.entrata)}"><i>€</i></span></label>
+    <label class="bx"><span class="bl">Spese mensili</span><span class="bi"><input data-base="spese" inputmode="decimal" autocomplete="off" value="${campo(b.spese)}"><i>€</i></span></label>
   </section>
   <section class="esito">
     <div><p class="lbl" id="esitoL"></p><p class="hero" id="esitoV"></p><p class="delta" id="esitoD"></p></div>
@@ -1078,7 +1090,6 @@ function aggiornaProspetto(allinea) {                        // allinea: 'entrat
     for (const [sel, val, mod, std, quale] of [['[data-ment]', r.e, r.modE, db.base.entrata, 'entrata'], ['[data-mese]', r.u, r.modU, db.base.spese, 'spese']]) {
       const inp = tr.querySelector(sel);
       inp.parentElement.classList.toggle('mod', mod);
-      inp.placeholder = campo(std);                             // svuotando il campo si torna al valore standard
       if (allinea === quale && inp !== document.activeElement) { inp.value = campo(val); inp.removeAttribute('aria-invalid'); }
     }
   }
@@ -1094,7 +1105,7 @@ function aggiornaProspetto(allinea) {                        // allinea: 'entrat
 }
 const tela = document.createElement('canvas').getContext('2d');
 function adatta(el) {                                       // il campo è largo quanto il numero, così "€" gli resta accanto
-  const cs = getComputedStyle(el), t = el.value || el.placeholder;
+  const cs = getComputedStyle(el), t = el.value || '00000';       // vuoto, resta largo abbastanza da toccarlo
   tela.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
   el.style.width = Math.ceil(tela.measureText(t).width + t.length * (parseFloat(cs.letterSpacing) || 0) + 8) + 'px';
 }
@@ -1170,62 +1181,63 @@ function disegnaGrafico(righe) {
   svg.addEventListener('pointerleave', nascondi); svg.addEventListener('pointercancel', nascondi);
 }
 
-/* ---------- Conti al volo ---------- */
+/* ---------- Conti al volo ----------
+   Un elenco di almeno dieci righe. Ogni riga ha: il tasto che decide se conta nel totale, il segno (spesa o
+   rimborso), la voce, l'importo e, se serve, il mese. */
+const RIGHE_CONTI = 10;
 function mesiConti() {
   const o = new Date(), l = [];
   for (let i = 0; i < 6; i++) { const d = new Date(o.getFullYear(), o.getMonth() + i, 1); l.push(`${d.getFullYear()}-${pad(d.getMonth() + 1)}`); }
   return l;
 }
-function nomeMeseYm(ym, breve) {
-  const [y, m] = ym.split('-').map(Number), d = new Date(y, m - 1, 1);
-  return breve ? meseCorto(d) + ' ' + String(y).slice(2) : d.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' });
-}
+const siglaMese = ym => `${MESI_SIGLE[Number(ym.slice(5)) - 1]} ${ym.slice(2, 4)}`;        // "2027-01" diventa "GEN 27"
 const voceVuota = () => ({ id: uid(), voce: '', importo: 0, segno: -1, mese: '' });
+const vocePiena = r => !!(r.voce.trim() || r.importo);
 const segnoTesto = r => (r.segno > 0 ? ['+', 'piu', 'Rimborso o entrata: clicca per farla tornare una spesa'] : ['−', 'meno', 'Spesa: clicca per trasformarla in un rimborso']);
-function rigaConti(r, primo) {
+const contaTesto = r => (r.off ? 'Fuori dal totale: clicca per contarla' : 'Conta nel totale: clicca per escluderla');
+const ICONA_SPUNTA = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3.2 8.4 6.6 11.6 12.8 4.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function rigaConti(r) {
   const mesi = mesiConti(), [t, c, aiuto] = segnoTesto(r);
-  const fuori = r.mese && !mesi.includes(r.mese) ? `<option value="${r.mese}" selected>${esc(nomeMeseYm(r.mese, true))}</option>` : '';
-  return `<div class="rg" data-id="${esc(r.id)}">
+  const fuori = r.mese && !mesi.includes(r.mese) ? `<option value="${r.mese}" selected>${siglaMese(r.mese)}</option>` : '';
+  return `<div class="rg${r.off ? ' off' : ''}${vocePiena(r) ? '' : ' vuota'}" data-id="${esc(r.id)}">
+  <button class="ck" data-act="conta" aria-pressed="${!r.off}" title="${contaTesto(r)}" aria-label="${contaTesto(r)}">${ICONA_SPUNTA}</button>
   <button class="sg ${c}" data-act="segno" title="${aiuto}" aria-label="${aiuto}">${t}</button>
-  <input class="v" data-f="voce" maxlength="60" autocomplete="off" aria-label="Voce" placeholder="${primo ? 'Ad esempio: bollo auto' : 'Voce'}" value="${esc(r.voce)}">
-  <span class="eu"><input data-f="importo" inputmode="decimal" autocomplete="off" aria-label="Importo in euro" placeholder="0" value="${r.importo ? campo(r.importo) : ''}"></span>
-  <select data-f="mese" aria-label="Mese previsto"><option value="">Senza mese</option>${fuori}${mesi.map(m => `<option value="${m}"${m === r.mese ? ' selected' : ''}>${esc(nomeMeseYm(m, true))}</option>`).join('')}</select>
+  <input class="v" data-f="voce" maxlength="60" autocomplete="off" aria-label="Voce" value="${esc(r.voce)}">
+  <span class="eu"><input data-f="importo" inputmode="decimal" autocomplete="off" aria-label="Importo in euro" value="${r.importo ? campo(r.importo) : ''}"></span>
+  <select data-f="mese" aria-label="Mese previsto"${r.mese ? '' : ' class="nm"'}><option value="">Mese</option>${fuori}${mesi.map(m => `<option value="${m}"${m === r.mese ? ' selected' : ''}>${siglaMese(m)}</option>`).join('')}</select>
   <button class="x" data-act="via-riga" aria-label="Togli la riga">&times;</button>
 </div>`;
 }
+function righeConti() {                                      // sempre almeno dieci righe, e una libera in fondo
+  const l = db.conti.voci;
+  while (l.length < RIGHE_CONTI || vocePiena(l[l.length - 1])) l.push(voceVuota());
+  return l;
+}
 function vConti() {
-  db.conti.voci = vociPiene();
-  const righe = db.conti.voci.concat([voceVuota()]);
   return `<header class="vh"><h1>Conti al volo</h1></header>${avvisoMemoria()}
   <div class="conti">
     <section class="lst" id="lst">
-      <div class="rows">${righe.map((r, i) => rigaConti(r, righe.length === 1 && i === 0)).join('')}</div>
       <p class="lt"><span id="totL">Da spendere</span><strong id="tot"></strong></p>
-      <p class="lf"><span class="muted" id="totD"></span><button class="link" data-act="svuota-lista" id="svLista" hidden>Svuota l'elenco</button></p>
-      <div class="resto" id="resto" aria-live="polite"></div>
+      <p class="lf"><span class="muted" id="totD"></span><span class="muted" id="resto"></span></p>
+      <div class="rows">${righeConti().map(rigaConti).join('')}</div>
+      <p class="sotto"><button class="link" data-act="svuota-lista" id="svLista" hidden>Svuota l'elenco</button></p>
     </section>
     <section class="lst" aria-labelledby="h6"><h2 id="h6">Prossimi 6 mesi</h2><div id="mesi6"></div></section>
   </div>`;
 }
 function aggiornaConti() {
-  const voci = vociPiene(), dec = voci.some(r => r.importo % 100) ? 2 : 0;
+  const tutte = vociPiene(), voci = tutte.filter(r => !r.off), escluse = tutte.length - voci.length, dec = tutte.some(r => r.importo % 100) ? 2 : 0;
   const somma = l => l.reduce((a, r) => a + r.segno * r.importo, 0);
   const spese = voci.filter(r => r.segno < 0).reduce((a, r) => a + r.importo, 0), rimborsi = voci.filter(r => r.segno > 0).reduce((a, r) => a + r.importo, 0), netto = rimborsi - spese;
   $('#totL').textContent = netto > 0 ? 'Ti avanzano' : 'Da spendere';
   $('#tot').textContent = eur(Math.abs(netto), dec);
-  $('#totD').textContent = spese && rimborsi ? `Spese ${eur(spese, dec)}, rimborsi ${eur(rimborsi, dec)}` : '';
-  $('#svLista').hidden = !voci.length;
-  const box = $('#resto'); box.textContent = '';
-  if (voci.length && db.base.patrimonio) {
-    const d2 = dec || (db.base.patrimonio % 100 ? 2 : 0), p = document.createElement('p'), f = document.createElement('strong');
-    f.textContent = eur(db.base.patrimonio + netto, d2); p.append(`Dal patrimonio attuale di ${eur(db.base.patrimonio, d2)} arriveresti a `, f, '.'); box.append(p);
-  }
-  box.hidden = !box.childNodes.length;
+  $('#totD').textContent = [spese && rimborsi ? `Spese ${eur(spese, dec)}, rimborsi ${eur(rimborsi, dec)}` : '', escluse ? `${escluse} esclus${escluse === 1 ? 'a' : 'e'}` : ''].filter(Boolean).join(' · ');
+  $('#resto').textContent = voci.length && db.base.patrimonio ? `Patrimonio dopo ${eur(db.base.patrimonio + netto, dec || (db.base.patrimonio % 100 ? 2 : 0))}` : '';
+  $('#svLista').hidden = !tutte.length;
   $('#mesi6').innerHTML = mesiConti().map(m => {
-    const l = voci.filter(r => r.mese === m), tot = somma(l);
-    return `<div class="m6${l.length ? '' : ' niente'}"><h3>${esc(nomeMeseYm(m).replace(/^./, x => x.toUpperCase()))}</h3>${l.length
-      ? `<ul>${l.map(r => `<li><span>${esc(r.voce.trim() || 'Senza nome')}</span><span class="num ${r.segno > 0 ? 'su' : ''}">${conSegno(r.segno * r.importo, dec)}</span></li>`).join('')}</ul><p class="m6t"><span>Totale del mese</span><strong class="num">${conSegno(tot, dec)} €</strong></p>`
-      : '<p class="muted">Niente in programma</p>'}</div>`;
+    const l = voci.filter(r => r.mese === m);
+    return `<div class="m6${l.length ? '' : ' niente'}"><p class="m6t"><span>${siglaMese(m)}</span><strong class="num">${l.length ? conSegno(somma(l), dec) + ' €' : '–'}</strong></p>${l.length
+      ? `<ul>${l.map(r => `<li><span>${esc(r.voce.trim() || 'Senza nome')}</span><span class="num ${r.segno > 0 ? 'su' : ''}">${conSegno(r.segno * r.importo, dec)}</span></li>`).join('')}</ul>` : ''}</div>`;
   }).join('');
 }
 function rigaDi(el) {
@@ -1237,14 +1249,15 @@ function rigaDi(el) {
 function suRiga(el) {
   const { rg, r } = rigaDi(el);
   if (el.dataset.f === 'voce') r.voce = el.value.slice(0, 60);
-  else if (el.dataset.f === 'mese') r.mese = /^\d{4}-\d{2}$/.test(el.value) ? el.value : '';
+  else if (el.dataset.f === 'mese') { r.mese = /^\d{4}-\d{2}$/.test(el.value) ? el.value : ''; el.classList.toggle('nm', !r.mese); }
   else {
     const raw = el.value.trim(), v = raw === '' ? 0 : leggi(raw, false);
     if (v == null) { el.setAttribute('aria-invalid', 'true'); el.title = 'Scrivi un numero, ad esempio 180 oppure 12,50'; }
     else { el.removeAttribute('aria-invalid'); el.removeAttribute('title'); r.importo = v; }
   }
+  rg.classList.toggle('vuota', !vocePiena(r));
   const righe = rg.parentElement;
-  if (righe.lastElementChild === rg && (r.voce.trim() || r.importo)) righe.insertAdjacentHTML('beforeend', rigaConti(voceVuota(), false));
+  if (righe.lastElementChild === rg && vocePiena(r)) { const nuova = voceVuota(); db.conti.voci.push(nuova); righe.insertAdjacentHTML('beforeend', rigaConti(nuova)); }
   salvaPresto(); aggiornaConti();
 }
 
@@ -1281,7 +1294,7 @@ function vNota(id) {
   </div>${avvisoMemoria()}
   <article class="foglio" id="foglio" style="${stileNota(n)}">
     <input class="nt" id="nt" maxlength="120" autocomplete="off" aria-label="Titolo" placeholder="Titolo" enterkeyhint="next" value="${esc(n.titolo)}">
-    <div class="nx rt" id="nx" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Testo della nota" data-ph="Scrivi qui. Un trattino e uno spazio a inizio riga fanno partire un elenco.">${n.testo}</div>
+    <div class="nx rt" id="nx" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Testo della nota">${n.testo}</div>
   </article>`;
 }
 const notaAperta = () => db.note.find(n => n.id === aperta);
@@ -1403,6 +1416,12 @@ const azioni = {
     salva(); disegna();
     avviso('Riga tolta', () => { db.conti.voci.splice(i, 0, tolta); salva(); disegna(); });
   },
+  conta: b => {                                               // dentro o fuori dal totale
+    const { rg, r } = rigaDi(b);
+    if (r.off) delete r.off; else r.off = true;
+    rg.classList.toggle('off', !!r.off); b.setAttribute('aria-pressed', !r.off); b.title = contaTesto(r); b.setAttribute('aria-label', contaTesto(r));
+    salva(); aggiornaConti();
+  },
   'svuota-lista': () => {
     const prima = db.conti.voci;
     db.conti.voci = []; salva(); disegna();
@@ -1460,7 +1479,10 @@ document.addEventListener('input', e => {
     n.aggiornata = Date.now(); salvaPresto();
   }
 });
-document.addEventListener('focusin', e => { if (numerico(e.target)) e.target.select(); });
+document.addEventListener('focusin', e => {
+  if (numerico(e.target)) e.target.select();
+  const rg = e.target.closest && e.target.closest('.rg'); if (rg) rg.classList.add('ap');      // da telefono la riga toccata mostra anche mese e importo
+});
 document.addEventListener('focusout', e => {                                 // all'uscita il numero torna in bella copia
   const t = e.target;
   if (!numerico(t) || t.getAttribute('aria-invalid') === 'true') return;
@@ -1810,7 +1832,7 @@ function boxPf(pf) {
       <td>${NF1.format(r.alloc)} %</td>
       <td>${NFQ.format(r.qta)}</td>
       <td>${NFP.format(r.carico)} €</td>
-      ${r.z ? `<td${r.z.cur && r.z.cur !== 'EUR' ? ` title="${esc(NFP.format(r.z.p) + ' ' + r.z.cur)}, convertito in euro"` : ''}>${NFP.format(r.prezzo)} €</td>` : `<td class="man"><span class="eu"><input data-man="${esc(r.s.id)}" inputmode="decimal" autocomplete="off" aria-label="Prezzo attuale di ${esc(r.s.nome)}, scritto a mano" placeholder="A mano" value="${r.s.manuale ? NFP.format(r.s.manuale) : ''}"></span></td>`}
+      ${r.z ? `<td${r.z.cur && r.z.cur !== 'EUR' ? ` title="${esc(NFP.format(r.z.p) + ' ' + r.z.cur)}, convertito in euro"` : ''}>${NFP.format(r.prezzo)} €</td>` : `<td class="man"><span class="eu"><input data-man="${esc(r.s.id)}" inputmode="decimal" autocomplete="off" aria-label="Prezzo attuale di ${esc(r.s.nome)}, scritto a mano" value="${r.s.manuale ? NFP.format(r.s.manuale) : ''}"></span></td>`}
       ${cellaPerc(r.z ? r.z.g : null)}${cellaPerc(r.z ? r.z.m : null)}${cellaPerc(r.z ? r.z.a : null)}
       <td>${euro(r.investiti)}</td>
       ${r.guadagno == null ? '<td class="vuota">–</td>' : `<td class="gu ${classeSegno(r.guadagno)}">${euroSegno(r.guadagno)}${r.investiti > 0 ? `<small>${percSegno(r.guadagno / r.investiti * 100)}</small>` : ''}</td>`}
@@ -1833,7 +1855,7 @@ function listaPf(c) {
     return `<li><details data-sid="${esc(r.s.id)}"${invAperti[r.s.id] ? ' open' : ''}>
       <summary><div class="sr"><i class="c${r.s.col % 8}"></i><span class="sn"><strong>${esc(r.s.nome)}</strong><small>${sotto}</small></span><span class="sv"><strong>${euro(r.valore)}</strong>${gu}</span></div></summary>
       <dl class="sd">${voce('Prezzo di carico', NFP.format(r.carico) + ' €')}
-        ${r.z ? voce('Prezzo ora', NFP.format(r.prezzo) + ' €') : `<div class="man"><dt>Prezzo ora, scritto a mano</dt><dd><span class="eu"><input data-man="${esc(r.s.id)}" inputmode="decimal" autocomplete="off" aria-label="Prezzo attuale di ${esc(r.s.nome)}, scritto a mano" placeholder="0,00" value="${r.s.manuale ? NFP.format(r.s.manuale) : ''}"></span></dd></div>`}
+        ${r.z ? voce('Prezzo ora', NFP.format(r.prezzo) + ' €') : `<div class="man"><dt>Prezzo ora, scritto a mano</dt><dd><span class="eu"><input data-man="${esc(r.s.id)}" inputmode="decimal" autocomplete="off" aria-label="Prezzo attuale di ${esc(r.s.nome)}, scritto a mano" value="${r.s.manuale ? NFP.format(r.s.manuale) : ''}"></span></dd></div>`}
         ${voce('Investiti', euro(r.investiti))}${voce('Guadagno', r.guadagno == null ? '–' : euroSegno(r.guadagno), r.guadagno == null ? 'vuota' : classeSegno(r.guadagno))}
         ${voce('Allocation', NF1.format(r.alloc) + ' %')}${voce('Quote', NFQ.format(r.qta))}
         ${voce('% Day', g, gc, 1)}${voce('% Month', m, mc, 1)}${voce('% Year', a, ac, 1)}</dl>
@@ -1853,7 +1875,7 @@ function formPf(pf, quale) {
   const data = `<label><span>Data</span><input type="date" name="d" value="${oggi()}" max="${oggi()}"></label>`;
   if (quale === 'str') return `<form class="fin" data-form="str" novalidate autocomplete="off">
       <label class="lungo"><span>Nome</span><input name="nome" maxlength="80"></label>
-      <label><span>Simbolo Yahoo</span><input name="ticker" maxlength="30" autocapitalize="characters" spellcheck="false" placeholder="VWCE.DE"></label>
+      <label><span>Simbolo Yahoo</span><input name="ticker" maxlength="30" autocapitalize="characters" spellcheck="false"></label>
       <label class="corto"><span>Quote</span><input name="q" inputmode="decimal"></label>
       <label class="corto"><span>Prezzo di carico</span><span class="eu"><input name="p" inputmode="decimal"></span></label>
       ${data}<button class="btn primary">Aggiungi</button><p class="err" data-err hidden></p></form>`;
@@ -1876,7 +1898,7 @@ function vPf(pf) {
 function vInvestimenti() {
   return `<header class="vh"><div><h1>ReesparmioFoil</h1><p class="sub" id="invStato" aria-live="polite" hidden></p></div><button class="btn" data-act="prezzi" id="btnPrezzi">Aggiorna prezzi</button></header>${avvisoMemoria()}
   ${db.inv.portafogli.map(vPf).join('')}
-  ${db.inv.portafogli.length < 2 ? `<form class="fin nuovo-pf" id="fPf" novalidate autocomplete="off"><label class="lungo"><span>Secondo portafoglio</span><input name="nome" maxlength="40" placeholder="Nome del portafoglio"></label><button class="btn">Crea portafoglio</button><p class="err" data-err hidden></p></form>` : ''}`;
+  ${db.inv.portafogli.length < 2 ? `<form class="fin nuovo-pf" id="fPf" novalidate autocomplete="off"><label class="lungo"><span>Secondo portafoglio</span><input name="nome" maxlength="40"></label><button class="btn">Crea portafoglio</button><p class="err" data-err hidden></p></form>` : ''}`;
 }
 function quandoPrezzi() {                                    // sta nel suggerimento del pulsante, non più sotto il titolo
   if (!db.inv.aggiornati) return '';
@@ -2218,7 +2240,7 @@ function vCassaforte() {
         <button class="btn ib testo" data-act="cf-cambia"><span class="solo-m">PIN</span><span class="solo-d">Cambia PIN</span></button>
         <button class="btn ib testo" data-act="cf-blocca"><span class="solo-m">${ICO.lucchetto}Chiudi</span><span class="solo-d">Chiudi a chiave</span></button></div>
       <div class="np-tools${stileAperto ? ' aperto' : ''}" id="npTools" role="group" aria-label="Aspetto della pagina">${barraStile(cf.stile, 'cf-')}</div></div>
-      <article class="foglio fc" id="cfFoglio" style="${stileNota(cf.stile)}"><div class="nx rt" id="cfx" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Pagina cifrata" spellcheck="false" data-ph="Scrivi qui.">${cf.doc}</div></article>`;
+      <article class="foglio fc" id="cfFoglio" style="${stileNota(cf.stile)}"><div class="nx rt" id="cfx" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Pagina cifrata" spellcheck="false">${cf.doc}</div></article>`;
   if (!db.cassaforte) return testa + `<form class="pinbox" id="pinCrea" autocomplete="off">${LUCCHETTO}
       ${campoPin('pin1', 'Scegli un PIN di 6 cifre')}${campoPin('pin2', 'Ripetilo')}
       <p class="pinmsg" id="pinMsg" aria-live="polite"></p>
@@ -2426,7 +2448,7 @@ function disegnaDrive() {
   let h;
   if (!sulWeb()) h = `<p>Per sincronizzare con Google Drive il quaderno va aperto da un indirizzo web (https), non con doppio clic sul file: Google non autorizza l'accesso da un file locale. Così com'è ora, salva solo in questo browser.</p>${guidaDrive()}`;
   else if (!clientId()) h = `<p>Manca l'ID client di Google: serve a far riconoscere il quaderno al tuo account.</p>${guidaDrive()}
-    <form class="riga" id="fCid"><input id="cid" autocomplete="off" spellcheck="false" aria-label="ID client OAuth" placeholder="1234567890-abc.apps.googleusercontent.com"><button class="btn primary">Salva l'ID client</button></form>`;
+    <form class="riga" id="fCid"><input id="cid" autocomplete="off" spellcheck="false" aria-label="ID client OAuth"><button class="btn primary">Salva l'ID client</button></form>`;
   else if (!dr.collegato) h = `<p>I dati sono solo in questo browser. Collegando Drive vengono salvati nella cartella "${CARTELLA}" del tuo Drive e li ritrovi da qualsiasi computer.</p>
     <p class="btns"><button class="btn primary" data-act="drive-collega">Collega Google Drive</button>${window.QUADERNO_CLIENT_ID ? '' : '<button class="btn quiet" data-act="cid-cambia">Cambia ID client</button>'}</p>${guidaDrive()}`;
   else {
@@ -2463,7 +2485,7 @@ function disegnaPonte(msg) {
         <textarea class="codice" id="yfCodice" readonly rows="8" spellcheck="false" aria-label="Codice dello script">${esc(CODICE_PONTE)}</textarea>
         <p class="muted">Lo script fa una cosa sola: legge i prezzi da Yahoo Finance per i simboli che gli chiede il quaderno. Non vede i tuoi dati. Chi conosce l'indirizzo può chiedergli prezzi, niente altro.</p>
        </details>
-       <form class="riga" id="fPonte"><input id="yfUrl" autocomplete="off" spellcheck="false" aria-label="Indirizzo dello script" placeholder="https://script.google.com/macros/s/…/exec"><button class="btn primary">Salva l'indirizzo</button></form><p class="muted" id="yfMsg" aria-live="polite">${esc(msg || '')}</p>`;
+       <form class="riga" id="fPonte"><input id="yfUrl" autocomplete="off" spellcheck="false" aria-label="Indirizzo dello script"><button class="btn primary">Salva l'indirizzo</button></form><p class="muted" id="yfMsg" aria-live="polite">${esc(msg || '')}</p>`;
 }
 async function provaPonte(indirizzo) {
   const j = await chiediPonte(['VWCE.DE'], indirizzo), z = j['VWCE.DE'];
@@ -2549,6 +2571,8 @@ document.addEventListener('submit', e => {
   disegna();
 });
 
+/* a ogni apertura si parte dalle Note, qualunque pagina fosse rimasta nell'indirizzo */
+if (location.hash && location.hash !== '#note') { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { location.hash = '#note'; } }
 applicaTema();
 disegna();
 driveAvvio();
