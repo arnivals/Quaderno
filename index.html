@@ -295,7 +295,8 @@ code{font:13px var(--mono);background:var(--soft);padding:2px 6px;border-radius:
 .rt li{margin:.1em 0}
 .rt b{font-weight:700}
 .np-tools .seg b{font-weight:800}
-.fc{--carta:var(--card);--inch:var(--ink);--nf:var(--sans);--ns:16.5px;--nk:1;min-height:62vh}
+.fc{min-height:62vh}
+.np-tools>.pic{margin-left:auto}
 
 /* conti al volo: un elenco solo, e i prossimi 6 mesi */
 .conti{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
@@ -419,6 +420,8 @@ i.c0{background:var(--c0)} i.c1{background:var(--c1)} i.c2{background:var(--c2)}
 .guida ol{margin:12px 0 10px;padding-left:22px;display:grid;gap:8px}
 .riga{display:flex;flex-wrap:wrap;gap:8px}
 .riga input{flex:1 1 280px;min-width:0;padding:9px 12px;border:1px solid var(--line);border-radius:12px;background:var(--field)}
+.codice{display:block;width:100%;margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--field);font:12.5px/1.5 var(--mono);white-space:pre;resize:vertical}
+.blk #yfMsg{margin-top:8px;font-size:14px;color:var(--ink)}
 .temi{display:flex;flex-wrap:wrap;gap:8px}
 .temi button{display:inline-flex;align-items:center;gap:8px;padding:7px 15px 7px 9px;border:1px solid var(--line);border-radius:999px;background:var(--card)}
 .temi button:hover{border-color:var(--muted)}
@@ -600,7 +603,7 @@ const oggi = () => isoGiorno(new Date());
 
 const TEMI = ['auto', 'light', 'dark', 'blu', 'carbone'];
 function pfVuoto(id, nome) { return { id, nome, strumenti: [], movimenti: [] }; }
-function invVuoto() { return { portafogli: [pfVuoto('a', 'ReesparmioFoil')], prezzi: {}, aggiornati: 0, foglio: '' }; }
+function invVuoto() { return { portafogli: [pfVuoto('a', 'ReesparmioFoil')], prezzi: {}, aggiornati: 0, foglio: '', ponte: '' }; }
 function vuoto() {
   return { versione: 3, base: { patrimonio: 0, entrata: 170000, spese: 0, aggiornato: null }, mesi: {}, conti: { voci: [] }, note: [], inv: invVuoto(), ferie: {}, cassaforte: null, ultimoBackup: null, tema: 'auto' };
 }
@@ -667,6 +670,7 @@ function normalizza(o) {
     }
     b.inv.aggiornati = Number(o.inv.aggiornati) || 0;
     b.inv.foglio = idDrive(o.inv.foglio) ? o.inv.foglio : '';
+    b.inv.ponte = typeof o.inv.ponte === 'string' && /^https:\/\/script\.google\.com\/macros\/s\/[\w-]{20,200}\/exec$/.test(o.inv.ponte) ? o.inv.ponte : '';
   }
   if (o.ferie && typeof o.ferie === 'object') {
     const val = v => (typeof v === 'number' && isFinite(v) && v >= 0 && v <= 9999 ? v : 0);
@@ -995,6 +999,12 @@ function suRiga(el) {
 }
 
 /* ---------- Note ---------- */
+const segStile = (tab, act, cur, stile) => `<div class="seg">${Object.keys(tab).map(k => `<button data-act="${act}" data-v="${k}" aria-pressed="${k === cur}"${stile ? ` style="font-family:${tab[k][1]};font-size:${tab[k][2]}em;line-height:${(1.4 / tab[k][2]).toFixed(2)}"` : ''}>${tab[k][0]}</button>`).join('')}</div>`;
+const swStile = (tab, act, cur) => `<div class="sw">${Object.keys(tab).map(k => `<button data-act="${act}" data-v="${k}" aria-pressed="${k === cur}" style="--c:${tab[k][1]}" title="${tab[k][0]}" aria-label="${tab[k][0]}"></button>`).join('')}</div>`;
+const barraStile = (o, pre) => `<div class="tg"><span class="tl">Carattere</span>${segStile(FONT, pre + 'font', o.font, true)}</div>
+    <div class="tg"><span class="tl">Dimensione</span>${segStile(DIM, pre + 'dim', o.dim)}</div>
+    <div class="tg"><span class="tl">Carta</span>${swStile(CARTA, pre + 'carta', o.carta)}</div>
+    <div class="tg"><span class="tl">Inchiostro</span>${swStile(INCH, pre + 'inch', o.inch)}</div>`;
 function stileNota(n) {
   const f = FONT[n.font];
   return `--carta:${CARTA[n.carta][1]};--inch:${INCH[n.inch][1]};--nf:${f[1]};--nk:${f[2]};--ns:${(DIM[n.dim][1] * f[2]).toFixed(1)}px`;
@@ -1009,15 +1019,10 @@ function vNote() {
 }
 function vNota(id) {
   const n = db.note.find(x => x.id === id);
-  const seg = (tab, act, cur, stile) => `<div class="seg">${Object.keys(tab).map(k => `<button data-act="${act}" data-v="${k}" aria-pressed="${k === cur}"${stile ? ` style="font-family:${tab[k][1]};font-size:${tab[k][2]}em;line-height:${(1.4 / tab[k][2]).toFixed(2)}"` : ''}>${tab[k][0]}</button>`).join('')}</div>`;
-  const sw = (tab, act, cur) => `<div class="sw">${Object.keys(tab).map(k => `<button data-act="${act}" data-v="${k}" aria-pressed="${k === cur}" style="--c:${tab[k][1]}" title="${tab[k][0]}" aria-label="${tab[k][0]}"></button>`).join('')}</div>`;
   return `<div class="np-top"><a class="btn" href="#note">&lsaquo; Tutte le note</a><span class="sp"></span><span class="muted">Si salva da sola</span><button class="btn" data-act="allegati" data-ref="n:${esc(n.id)}" id="btnAll">${etichettaAllegati(n.allegati)}</button><button class="btn del" data-act="canc-nota">Elimina nota</button></div>${avvisoMemoria()}
   <div class="np-tools" role="group" aria-label="Aspetto della nota">
     <div class="tg"><span class="tl">Testo</span>${barraTesto()}</div>
-    <div class="tg"><span class="tl">Carattere</span>${seg(FONT, 'n-font', n.font, true)}</div>
-    <div class="tg"><span class="tl">Dimensione</span>${seg(DIM, 'n-dim', n.dim)}</div>
-    <div class="tg"><span class="tl">Carta</span>${sw(CARTA, 'n-carta', n.carta)}</div>
-    <div class="tg"><span class="tl">Inchiostro</span>${sw(INCH, 'n-inch', n.inch)}</div>
+    ${barraStile(n, 'n-')}
   </div>
   <article class="foglio" id="foglio" style="${stileNota(n)}">
     <input class="nt" id="nt" maxlength="120" autocomplete="off" aria-label="Titolo" placeholder="Titolo" value="${esc(n.titolo)}">
@@ -1459,7 +1464,6 @@ const euro = v => meno(NF2.format(v)) + ' €';
 const euroSegno = v => (v > 0.004 ? '+ ' : v < -0.004 ? '− ' : '') + NF2.format(Math.abs(v)) + ' €';
 const percSegno = v => (v > 0.04 ? '+' : v < -0.04 ? '−' : '') + NF1.format(Math.abs(v)) + ' %';
 const classeSegno = v => (v > 0.004 ? 'su' : v < -0.004 ? 'giu' : '');
-const NOME_FOGLIO = 'Prezzi (Quaderno morbido)';
 const invForm = {}, invStorico = {};
 let invTimer = 0, invOccupato = false, invMsg = '', tPrezzi = 0;
 function leggiDec(v) {
@@ -1523,7 +1527,7 @@ function boxPf(pf) {
   return testa + `<div class="tsc"><table class="it">
     <thead><tr><th scope="col">Nome</th><th scope="col">Allocation</th><th scope="col">Quote</th><th scope="col">Prezzo di carico</th><th scope="col">Prezzo ora</th><th scope="col">% Day</th><th scope="col">% Month</th><th scope="col">% Year</th><th scope="col">Investiti</th><th scope="col">Guadagno</th><th></th></tr></thead>
     <tbody>${c.l.map(r => `<tr${r.nonTrovato ? ' class="mancante"' : ''}>
-      <th scope="row"><i class="c${r.s.col % 8}"></i><span class="nm">${esc(r.s.nome)}</span>${r.s.ticker ? `<span class="tk"${r.nonTrovato ? ' title="Non trovato: controlla ISIN o sigla"' : ''}>${esc(r.s.ticker)}${r.nonTrovato ? ' · non trovato' : ''}</span>` : ''}</th>
+      <th scope="row"><i class="c${r.s.col % 8}"></i><span class="nm">${esc(r.s.nome)}</span>${r.s.ticker ? `<span class="tk"${r.nonTrovato ? ' title="Non trovato su Yahoo Finance: controlla il simbolo"' : ''}>${esc(r.s.ticker)}${r.nonTrovato ? ' · non trovato' : ''}</span>` : ''}</th>
       <td>${NF1.format(r.alloc)} %</td>
       <td>${NFQ.format(r.qta)}</td>
       <td>${NFP.format(r.carico)} €</td>
@@ -1548,7 +1552,7 @@ function formPf(pf, quale) {
   const data = `<label><span>Data</span><input type="date" name="d" value="${oggi()}" max="${oggi()}"></label>`;
   if (quale === 'str') return `<form class="fin" data-form="str" novalidate autocomplete="off">
       <label class="lungo"><span>Nome</span><input name="nome" maxlength="80"></label>
-      <label><span>Ticker o ISIN</span><input name="ticker" maxlength="30" autocapitalize="characters" spellcheck="false"></label>
+      <label><span>Simbolo Yahoo</span><input name="ticker" maxlength="30" autocapitalize="characters" spellcheck="false" placeholder="VWCE.DE"></label>
       <label class="corto"><span>Quote</span><input name="q" inputmode="decimal"></label>
       <label class="corto"><span>Prezzo di carico</span><span class="eu"><input name="p" inputmode="decimal"></span></label>
       ${data}<button class="btn primary">Aggiungi</button><p class="err" data-err hidden></p></form>`;
@@ -1572,15 +1576,15 @@ function vInvestimenti() {
   return `<header class="vh"><div><h1>ReesparmioFoil</h1><p class="sub" id="invStato"></p></div><button class="btn" data-act="prezzi" id="btnPrezzi">Aggiorna prezzi</button></header>${avvisoMemoria()}
   ${db.inv.portafogli.map(vPf).join('')}
   ${db.inv.portafogli.length < 2 ? `<form class="fin nuovo-pf" id="fPf" novalidate autocomplete="off"><label class="lungo"><span>Un secondo portafoglio, con un suo totale separato</span><input name="nome" maxlength="40" placeholder="Nome del portafoglio"></label><button class="btn">Crea portafoglio</button><p class="err" data-err hidden></p></form>` : ''}
-  <p class="aiuto"><strong>ETF europei:</strong> scrivi l'ISIN, ad esempio <strong>IE00BK5BQT80</strong>; prezzo e variazioni arrivano in euro da justETF. <strong>Azioni:</strong> scrivi la sigla come su Google Finance, con la borsa davanti, ad esempio <strong>BIT:ENI</strong> o <strong>NASDAQ:AAPL</strong>. % Month e % Year sono le variazioni dell'ultimo mese e degli ultimi dodici mesi.${db.inv.foglio ? ` Il foglio usato per i prezzi è <a href="https://docs.google.com/spreadsheets/d/${esc(db.inv.foglio)}/edit" target="_blank" rel="noopener">questo</a>: se qualcosa resta senza prezzo, aprilo una volta e consenti l'accesso ai dati esterni.` : ''}</p>`;
+  <p class="aiuto">Il simbolo va scritto come su Yahoo Finance, con il suffisso della borsa: <strong>VWCE.DE</strong> per Xetra, <strong>ENI.MI</strong> per Milano, <strong>AAPL</strong> per gli Stati Uniti. I prezzi in altre valute vengono convertiti in euro. % Month e % Year sono le variazioni dell'ultimo mese e degli ultimi dodici mesi.</p>`;
 }
 function testoStatoPrezzi() {
   if (invMsg) return invMsg;
-  if (!tickerUsati().length) return 'I prezzi dal vivo arrivano per gli strumenti che hanno un ISIN o un ticker.';
-  if (!driveAttivo() && !tickerUsati().some(eIsin)) return 'Per i prezzi delle azioni collega Google Drive nelle Impostazioni. Intanto puoi scriverli a mano.';
+  if (!ponte()) return 'Per i prezzi dal vivo collega Yahoo Finance nelle Impostazioni. Intanto puoi scriverli a mano.';
+  if (!tickerUsati().length) return 'I prezzi dal vivo arrivano per gli strumenti che hanno un simbolo.';
   if (!db.inv.aggiornati) return 'Prezzi non ancora scaricati.';
   const d = new Date(db.inv.aggiornati), oggiStesso = isoGiorno(d) === oggi();
-  return `Prezzi ${oggiStesso ? 'di oggi' : 'del ' + d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' })} alle ${oraBreve(d)}. Arrivano con un ritardo di almeno 15-20 minuti.`;
+  return `Prezzi ${oggiStesso ? 'di oggi' : 'del ' + d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' })} alle ${oraBreve(d)}, da Yahoo Finance. Possono avere un ritardo di 15-20 minuti.`;
 }
 function aggiornaInv(forza) {
   if (!$('#invStato')) return;
@@ -1620,114 +1624,55 @@ function inviaForm(f) {
 }
 
 /* ---------- ReesparmioFoil: prezzi dal vivo ----------
-   Due fonti, scelte da come è scritto lo strumento:
-   - ISIN (es. IE00BK5BQT80): justETF, in euro, con variazione del giorno e serie storica per mese e anno.
-     Prima provo dal browser; se il sito non lo permette, passo dal foglio su Drive (solo il prezzo).
-   - BORSA:SIGLA (es. BIT:ENI, NASDAQ:AAPL): Google Finance, attraverso un foglio nella cartella del quaderno. */
-const eIsin = t => /^[A-Z]{2}[A-Z0-9]{9}\d$/.test(t);
-const urlJustEtf = t => `https://www.justetf.com/api/etfs/${t}/quote?locale=en&currency=EUR&isin=${t}`;
+   I prezzi arrivano da Yahoo Finance, con gli stessi simboli (VWCE.DE, ENI.MI, AAPL). Un browser non può
+   interrogare Yahoo direttamente, quindi passa da un piccolo script che l'utente pubblica una volta nel proprio
+   account Google (Apps Script): lo script legge Yahoo e risponde con prezzo in euro e variazioni. */
+const PONTE_OK = /^https:\/\/script\.google\.com\/macros\/s\/[\w-]{20,200}\/exec$/;
+const ponte = () => (PONTE_OK.test(db.inv.ponte || '') ? db.inv.ponte : '');
 const numOk = v => (typeof v === 'number' && isFinite(v) ? v : null);
-function variazione(serie, mesi, ultimo) {                   // rispetto all'ultimo valore disponibile N mesi fa
-  const d = new Date(); d.setMonth(d.getMonth() - mesi);
-  const limite = isoGiorno(d);
-  let base = null;
-  for (const x of serie) if (x && typeof x.date === 'string' && x.date <= limite && x.value && x.value.raw > 0) base = x.value.raw;
-  return base ? (ultimo / base - 1) * 100 : null;
-}
-async function quotaJustEtf(t) {
-  const opz = { credentials: 'omit', referrerPolicy: 'no-referrer' };
-  const r = await fetch(urlJustEtf(t), opz);
-  if (!r.ok) throw new Error('justETF ' + r.status);
-  const j = await r.json(), p = j && j.latestQuote && j.latestQuote.raw;
-  if (typeof p !== 'number' || !(p > 0)) throw new Error('justETF: risposta inattesa');
-  const out = { p, g: numOk(j.dtdPrc && j.dtdPrc.raw), m: null, a: null };
-  try {
-    const da = new Date(); da.setDate(da.getDate() - 380);
-    const c = await (await fetch(`https://www.justetf.com/api/etfs/${t}/performance-chart?locale=en&currency=EUR&valuesType=MARKET_VALUE&reduceData=false&includeDividends=false&features=DIVIDENDS&dateFrom=${isoGiorno(da)}&dateTo=${oggi()}`, opz)).json();
-    const serie = Array.isArray(c.series) ? [...c.series].sort((x, y) => String(x.date).localeCompare(String(y.date))) : [];
-    out.m = variazione(serie, 1, p); out.a = variazione(serie, 12, p);
-  } catch (e) {}
-  return out;
-}
-async function foglioPrezzi() {
-  if (db.inv.foglio) return db.inv.foglio;
-  if (!dr.cartella) await struttura();
-  const l = await cerca(`name='${NOME_FOGLIO}' and mimeType='application/vnd.google-apps.spreadsheet' and trashed=false`);
-  let id = l.length ? l[0].id : '';
-  if (!id) {
-    id = (await gj(FOGLI + '?fields=spreadsheetId', invia('POST', { properties: { title: NOME_FOGLIO, locale: 'en_US' } }))).spreadsheetId;
-    try { await g(`${API}/files/${id}?addParents=${dr.cartella}&removeParents=root&fields=id`, invia('PATCH', {})); } catch (e) {}
-  }
-  db.inv.foglio = id; salva();
-  return id;
-}
-function rigaFoglio(t, i) {
-  const n = i + 1;
-  if (eIsin(t)) return [t, `=VALUE(REGEXEXTRACT(INDEX(IMPORTDATA("${urlJustEtf(t)}&_=${Date.now()}"),1,1),"([0-9]+\\.?[0-9]*)\\s*$"))`, 'EUR', 1, '', '', ''];
-  return [t, `=GOOGLEFINANCE(A${n},"price")`, `=GOOGLEFINANCE(A${n},"currency")`,
-    `=IF(C${n}="EUR",1,IF(C${n}="GBX",GOOGLEFINANCE("CURRENCY:GBPEUR")/100,GOOGLEFINANCE("CURRENCY:"&C${n}&"EUR")))`,
-    `=GOOGLEFINANCE(A${n},"changepct")`,
-    `=INDEX(GOOGLEFINANCE(A${n},"close",TODAY()-31,TODAY()-24),2,2)`,
-    `=INDEX(GOOGLEFINANCE(A${n},"close",TODAY()-366,TODAY()-359),2,2)`];
-}
-async function leggiFoglio(tk) {
-  const id = await foglioPrezzi(), n = tk.length, zona = encodeURIComponent('A1:G' + n);
-  await g(`${FOGLI}/${id}/values/${zona}?valueInputOption=USER_ENTERED`, invia('PUT', { values: tk.map(rigaFoglio) }));
-  await g(`${FOGLI}/${id}/values/${encodeURIComponent('A' + (n + 1) + ':G1000')}:clear`, invia('POST', {}));
-  const pronta = r => r && typeof r[1] === 'number' && typeof r[3] === 'number';
-  const attesi = tk.map((t, i) => i).filter(i => !(db.inv.prezzi[tk[i]] && db.inv.prezzi[tk[i]].err));   // gli introvabili già noti non li aspetto
-  let v = [];
-  for (let k = 0; k < 5; k++) {                               // le celle ci mettono qualche secondo a riempirsi
-    await attesa(k ? 1500 : 900);
-    v = (await gj(`${FOGLI}/${id}/values/${zona}?valueRenderOption=UNFORMATTED_VALUE`)).values || [];
-    if (attesi.every(i => pronta(v[i]))) break;
-  }
-  return v;
+async function chiediPonte(simboli, indirizzo) {
+  let r;
+  try { r = await fetch((indirizzo || ponte()) + '?s=' + encodeURIComponent(simboli.join(',')), { credentials: 'omit', redirect: 'follow' }); }
+  catch (e) { throw new Error('lo script dei prezzi non risponde: controlla l\'indirizzo e che l\'accesso sia impostato su "Chiunque"'); }
+  if (!r.ok) throw new Error('lo script dei prezzi ha risposto con errore ' + r.status);
+  let j;
+  try { j = await r.json(); } catch (e) { throw new Error('lo script dei prezzi ha risposto con una pagina invece dei dati: l\'accesso va impostato su "Chiunque"'); }
+  if (!j || typeof j !== 'object') throw new Error('risposta inattesa dallo script dei prezzi');
+  if (j.errore) throw new Error('lo script dei prezzi segnala: ' + String(j.errore).slice(0, 140));
+  return j;
 }
 async function prezziAggiorna(chiesto) {
   if (invOccupato) return;
-  const tk = tickerUsati(), isin = tk.filter(eIsin);
-  if (!tk.length) { if (chiesto) avviso('Nessuno strumento ha un ISIN o un ticker'); return; }
-  if (!driveAttivo() && !isin.length) { if (chiesto) avviso('Per i prezzi delle azioni collega Google Drive nelle Impostazioni'); return; }
+  const tk = tickerUsati();
+  if (!tk.length) { if (chiesto) avviso('Nessuno strumento ha un simbolo'); return; }
+  if (!ponte()) { if (chiesto) avviso('Per i prezzi dal vivo collega Yahoo Finance nelle Impostazioni'); return; }
   invOccupato = true; invMsg = ''; aggiornaInv();
-  const ora = Date.now(), trovati = {};
-  let problema = '';
+  const ora = Date.now(), nuovi = {};
+  let problema = '', mancanti = 0, trovati = 0;
   try {
-    await Promise.all(isin.map(async t => { try { const q = await quotaJustEtf(t); trovati[t] = { p: q.p, cur: 'EUR', eur: q.p, t: ora, err: false, g: q.g, m: q.m, a: q.a }; } catch (e) {} }));
-    const resto = tk.filter(t => !trovati[t]);
-    if (resto.length && driveAttivo()) {
-      let v;
-      try { v = await leggiFoglio(resto); }
-      catch (e) { if (e.stato !== 404) throw e; db.inv.foglio = ''; v = await leggiFoglio(resto); }   // il foglio era stato cancellato: lo ricreo
-      resto.forEach((t, i) => {
-        const r = v[i] || [], p = r[1], fx = r[3], ieri = numOk(r[5]), anno = numOk(r[6]);
-        if (typeof p === 'number' && p > 0 && typeof fx === 'number' && fx > 0) trovati[t] = { p, cur: String(r[2] || '').slice(0, 5), eur: p * fx, t: ora, err: false, g: numOk(r[4]), m: ieri > 0 ? (p / ieri - 1) * 100 : null, a: anno > 0 ? (p / anno - 1) * 100 : null };
-      });
+    const j = {};
+    for (let i = 0; i < tk.length; i += 40) Object.assign(j, await chiediPonte(tk.slice(i, i + 40)));
+    for (const t of tk) {
+      const z = j[t], prima = db.inv.prezzi[t];
+      if (z && typeof z.eur === 'number' && z.eur > 0) { nuovi[t] = { p: numOk(z.p) || z.eur, cur: String(z.cur || 'EUR').slice(0, 5), eur: z.eur, t: ora, err: false, g: numOk(z.g), m: numOk(z.m), a: numOk(z.a) }; trovati++; }
+      else if (prima && !prima.err) nuovi[t] = prima;         // tengo l'ultimo prezzo buono
+      else { nuovi[t] = { p: 0, cur: '', eur: 0, t: ora, err: true, g: null, m: null, a: null }; mancanti++; }
     }
-  } catch (e) {
-    problema = e.scaduto ? 'Drive va ricollegato.' : e.rete ? 'manca la rete.' : e.message;
-    if (e.scaduto) stato('scaduto');
-  }
-  const nuovi = {};
-  let mancanti = 0, senzaDrive = 0;
-  for (const t of tk) {
-    const prima = db.inv.prezzi[t];
-    if (trovati[t]) nuovi[t] = trovati[t];
-    else if (prima && !prima.err) nuovi[t] = prima;           // tengo l'ultimo prezzo buono
-    else if (problema || !driveAttivo()) { if (prima) nuovi[t] = prima; senzaDrive++; }   // senza il foglio non posso dire che il titolo non esiste
-    else { nuovi[t] = { p: 0, cur: '', eur: 0, t: ora, err: true, g: null, m: null, a: null }; mancanti++; }
-  }
-  db.inv.prezzi = nuovi;
-  if (Object.keys(trovati).length) db.inv.aggiornati = ora;
-  salva();
-  invMsg = problema ? 'Prezzi non aggiornati del tutto: ' + problema
-    : mancanti ? `${mancanti === 1 ? 'Uno strumento non è stato trovato' : mancanti + ' strumenti non sono stati trovati'}: puoi scrivere il prezzo a mano.`
-    : senzaDrive ? 'Alcuni prezzi non sono arrivati: per quelli serve Google Drive collegato (Impostazioni).' : '';
+    db.inv.prezzi = nuovi;
+    if (trovati) db.inv.aggiornati = ora;
+    salva();
+  } catch (e) { problema = e.message; }
+  invMsg = problema ? 'Prezzi non aggiornati: ' + problema + '.'
+    : mancanti ? `${mancanti === 1 ? 'Uno strumento non è stato trovato' : mancanti + ' strumenti non sono stati trovati'} su Yahoo Finance: controlla il simbolo, oppure scrivi il prezzo a mano.` : '';
   invOccupato = false; aggiornaInv();
 }
 function dopoInvestimenti() {
   aggiornaInv(true);
-  if ((driveAttivo() || tickerUsati().some(eIsin)) && tickerUsati().length && Date.now() - db.inv.aggiornati > 15 * 60000) prezziAggiorna(false);
+  if (db.inv.foglio && driveAttivo()) {                       // il foglio dei prezzi delle versioni precedenti non serve più: va nel cestino di Drive
+    const vecchio = db.inv.foglio; db.inv.foglio = ''; salva();
+    g(`${API}/files/${vecchio}`, invia('PATCH', { trashed: true })).catch(() => {});
+  }
+  if (ponte() && tickerUsati().length && Date.now() - db.inv.aggiornati > 15 * 60000) prezziAggiorna(false);
   clearInterval(invTimer);
   invTimer = setInterval(() => { if (!document.hidden) prezziAggiorna(false); }, 5 * 60000);
 }
@@ -1886,6 +1831,17 @@ const b64 = u => { let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += S
 const b64dec = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 const cifraturaOk = () => !!(window.crypto && crypto.subtle && window.hashwasm && hashwasm.argon2id);
 
+function stileDati(o) {                                      // carattere, dimensione, carta e inchiostro: viaggiano cifrati insieme al testo
+  const s = o && typeof o === 'object' ? o : {}, tra = (v, tab, def) => (typeof v === 'string' && Object.prototype.hasOwnProperty.call(tab, v) ? v : def);
+  return { font: tra(s.font, FONT, 'semplice'), dim: tra(s.dim, DIM, 'medio'), carta: tra(s.carta, CARTA, 'neve'), inch: tra(s.inch, INCH, 'nero') };
+}
+function stileCf(chiave, b) {
+  if (!cf) return;
+  cf.stile[chiave] = b.dataset.v;
+  $('#cfFoglio').setAttribute('style', stileNota(cf.stile));
+  b.parentElement.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  cfSalva(); cfTocco();
+}
 async function derivaChiave(pin, kdf) {
   const raw = await hashwasm.argon2id({ password: pin, salt: b64dec(kdf.salt), parallelism: kdf.p, iterations: kdf.t, memorySize: kdf.m, hashLength: 32, outputType: 'binary' });
   const k = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt', 'decrypt']);
@@ -1894,7 +1850,7 @@ async function derivaChiave(pin, kdf) {
 }
 async function cifraVoci(c) {
   const iv = crypto.getRandomValues(new Uint8Array(12));
-  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: AAD }, c.chiave, utf8.encode(JSON.stringify({ doc: c.doc })));
+  const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv, additionalData: AAD }, c.chiave, utf8.encode(JSON.stringify({ doc: c.doc, stile: c.stile })));
   return { v: 1, kdf: c.kdf, iv: b64(iv), ct: b64(new Uint8Array(ct)) };
 }
 function cfSalva() {                                         // ricifra e salva; resta in coda dietro al salvataggio precedente
@@ -1937,8 +1893,9 @@ function vCassaforte() {
       <div class="btns"><button type="button" class="btn quiet" data-act="cf-cambia-no">Annulla</button><button class="btn primary">Cambia PIN</button></div></form>`;
   if (cf) return testa('Aperta: scrivi liberamente. Si richiude quando esci dalla pagina, o dopo 5 minuti senza toccarla.',
       '<div class="btns"><button class="btn" data-act="cf-cambia">Cambia PIN</button><button class="btn" data-act="cf-blocca">Chiudi a chiave</button></div>')
-    + `<div class="np-tools" role="group" aria-label="Testo"><div class="tg"><span class="tl">Testo</span>${barraTesto()}</div><span class="muted pic">Si salva da sola, cifrata</span></div>
-      <article class="foglio fc"><div class="nx rt" id="cfx" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Pagina cifrata" spellcheck="false" data-ph="Scrivi qui quello che vuoi tenere al sicuro. Un trattino e uno spazio a inizio riga fanno partire un elenco.">${cf.doc}</div></article>`;
+    + `<div class="np-tools" role="group" aria-label="Aspetto della pagina"><div class="tg"><span class="tl">Testo</span>${barraTesto()}</div>
+    ${barraStile(cf.stile, 'cf-')}<span class="muted pic">Si salva da sola, cifrata</span></div>
+      <article class="foglio fc" id="cfFoglio" style="${stileNota(cf.stile)}"><div class="nx rt" id="cfx" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Pagina cifrata" spellcheck="false" data-ph="Scrivi qui quello che vuoi tenere al sicuro. Un trattino e uno spazio a inizio riga fanno partire un elenco.">${cf.doc}</div></article>`;
   if (!db.cassaforte) return testa('Scheda cifrata: quello che scrivi qui si legge solo con il PIN.') + `<form class="pinbox" id="pinCrea" autocomplete="off">${LUCCHETTO}
       ${campoPin('pin1', 'Scegli un PIN di 6 cifre')}${campoPin('pin2', 'Ripetilo')}
       <p class="pinmsg" id="pinMsg" aria-live="polite"></p>
@@ -1978,7 +1935,7 @@ async function sblocca(pin) {
       : (Array.isArray(j.voci) ? j.voci : []).filter(v => v && typeof v === 'object').map(v => `<div><b>${esc(String(v.titolo || '').slice(0, 120))}</b></div>${htmlDaTesto(String(v.testo || '').slice(0, 20000))}`).join('<div><br></div>');
     pinScrivi({ n: 0, fino: 0 });
     if (db.cassaforte !== dati || rotta().vista !== 'dati') return;      // nel frattempo si è usciti o i dati sono cambiati
-    cf = { chiave, kdf: dati.kdf, doc };
+    cf = { chiave, kdf: dati.kdf, doc, stile: stileDati(j.stile) };
     disegna();
   } catch (e) {
     const s = pinSbagliato();
@@ -1996,7 +1953,7 @@ async function pinDaModulo(f) {
   m.textContent = 'Preparo la chiave…';
   try {
     const kdf = Object.assign({}, KDF, { salt: b64(crypto.getRandomValues(new Uint8Array(16))) }), chiave = await derivaChiave(a, kdf);
-    cf = { chiave, kdf, doc: cf ? cf.doc : '' };
+    cf = { chiave, kdf, doc: cf ? cf.doc : '', stile: cf ? cf.stile : stileDati() };
     await cfSalva(); pinScrivi({ n: 0, fino: 0 });
     disegna(); avviso(f.id === 'pinCrea' ? 'Scheda cifrata creata' : 'PIN cambiato');
   } catch (e) {
@@ -2006,6 +1963,7 @@ async function pinDaModulo(f) {
 }
 
 Object.assign(azioni, {
+  'cf-font': b => stileCf('font', b), 'cf-dim': b => stileCf('dim', b), 'cf-carta': b => stileCf('carta', b), 'cf-inch': b => stileCf('inch', b),
   'cf-blocca': async () => { await cfSalva(); cassaforteBlocca(); disegna(); },
   'cf-cambia': () => { if (cf) { cf.cambio = true; disegna(); } },
   'cf-cambia-no': () => { if (cf) { delete cf.cambio; disegna(); } },
@@ -2122,12 +2080,14 @@ function guidaDrive() {
   return `<details class="guida"${clientId() ? '' : ' open'}><summary>Come si prepara l'accesso a Google (una volta sola)</summary>
     <ol>
       <li>Apri <a href="https://console.cloud.google.com/" target="_blank" rel="noopener">console.cloud.google.com</a> con il tuo account e crea un progetto, ad esempio "Quaderno".</li>
-      <li>In <em>API e servizi → Libreria</em> abilita <strong>Google Drive API</strong> e <strong>Google Sheets API</strong> (la seconda serve ai prezzi degli investimenti).</li>
-      <li>Configura la schermata di consenso OAuth: tipo di utenti <em>Esterno</em>, un nome per l'app e la tua email. Come stato di pubblicazione scegli <em>In produzione</em>: con <em>Test</em> Google ti richiede l'autorizzazione ogni 7 giorni.</li>
-      <li>Crea le credenziali: <em>ID client OAuth → Applicazione web</em>. In <em>Origini JavaScript autorizzate</em> aggiungi esattamente <code>${esc(sulWeb() ? location.origin : "l'indirizzo da cui apri il quaderno")}</code></li>
-      <li>Copia l'ID client (finisce con <code>.apps.googleusercontent.com</code>) e incollalo qui sotto. Per non doverlo reinserire su ogni computer, scrivilo anche nella riga <code>QUADERNO_CLIENT_ID</code> in cima al file prima di pubblicarlo.</li>
+      <li>In <em>APIs &amp; Services → Library</em> abilita <strong>Google Drive API</strong>.</li>
+      <li>Vai su <em>Google Auth platform → Branding</em>, clicca <em>Get started</em> e completa i passaggi: nome dell'app, la tua email, pubblico <em>External</em>.</li>
+      <li>In <em>Google Auth platform → Audience</em> clicca <em>Publish app</em>. Se preferisci lasciarla in prova, aggiungi la tua email sotto <em>Test users</em>: in quel caso Google richiede l'autorizzazione ogni 7 giorni.</li>
+      <li>In <em>Google Auth platform → Clients</em> clicca <em>Create client</em>, tipo <em>Web application</em>. Sotto <em>Authorized JavaScript origins</em> clicca <em>Add URI</em> e scrivi esattamente <code>${esc(sulWeb() ? location.origin : "l'indirizzo da cui apri il quaderno")}</code>, poi <em>Create</em>.</li>
+      <li>Copia il <em>Client ID</em> (finisce con <code>.apps.googleusercontent.com</code>), incollalo nella casella qui sotto e salva. Poi clicca <em>Collega Google Drive</em>.</li>
     </ol>
-    <p class="muted">Alla prima autorizzazione Google può mostrare l'avviso "app non verificata": è normale per un'app personale, si prosegue da <em>Avanzate</em>. Il quaderno chiede solo il permesso di gestire i file che crea lui: non vede il resto del tuo Drive.</p>
+
+    <p class="muted">I nomi dei menu sono quelli della console in inglese. Alla prima autorizzazione Google può mostrare l'avviso "app non verificata": è normale per un'app personale, si prosegue da <em>Avanzate</em>. Se compare "Accesso bloccato, errore 403", manca il passaggio 4. Il quaderno chiede solo il permesso di gestire i file che crea lui: non vede il resto del tuo Drive.</p>
   </details>`;
 }
 function disegnaDrive() {
@@ -2153,10 +2113,38 @@ function disegnaDrive() {
   else if (!backupDrive.length) bb.innerHTML = '<p class="muted">Ancora nessun backup: il primo viene creato il 15.</p>';
   else bb.innerHTML = `<ul class="al">${backupDrive.map(f => `<li><span><strong>${esc(nomePeriodo(f.appProperties.periodo))}</strong> <span class="muted">creato il ${new Date(f.createdTime).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })}</span></span><button class="btn sm" data-act="backup-ripristina" data-id="${esc(f.id)}">Ripristina</button></li>`).join('')}</ul>`;
 }
+const CODICE_PONTE = "/**\n * Quaderno morbido: ponte per i prezzi di Yahoo Finance.\n * Va pubblicato come \"App web\" (Esegui come: Me, Chi ha accesso: Chiunque).\n * Il quaderno lo interroga cosi':  .../exec?s=VWCE.DE,AAPL\n * e riceve per ogni simbolo: prezzo, valuta, prezzo in euro, variazione del giorno, del mese e dell'anno.\n */\nfunction doGet(e) {\n  var out = {};\n  try {\n    var simboli = String((e && e.parameter && e.parameter.s) || '').split(',')\n      .map(function (x) { return x.trim().toUpperCase(); })\n      .filter(function (x, i, l) { return /^[A-Z0-9.\\-]{1,20}$/.test(x) && l.indexOf(x) === i; })\n      .slice(0, 40);\n    var dati = leggi_(simboli);\n    var valute = {};\n    simboli.forEach(function (s) {\n      var d = dati[s];\n      if (d && d.cur && d.cur.toUpperCase() !== 'EUR') valute[d.cur.toUpperCase()] = true;\n    });\n    var cambi = leggi_(Object.keys(valute).map(function (v) { return v + 'EUR=X'; }));\n    simboli.forEach(function (s) {\n      var d = dati[s];\n      if (!d) { out[s] = { err: 'non trovato' }; return; }\n      var fx = 1;\n      if (d.cur.toUpperCase() !== 'EUR') {\n        var c = cambi[d.cur.toUpperCase() + 'EUR=X'];\n        fx = c ? c.p : 0;\n        if (d.cur === 'GBp' || d.cur === 'GBX') fx = fx / 100;      // Londra quota in pence\n      }\n      out[s] = { p: d.p, cur: d.cur, eur: fx ? d.p * fx : null, g: d.g, m: d.m, a: d.a, nome: d.nome };\n      if (!fx) out[s].err = 'cambio non trovato';\n    });\n  } catch (err) {\n    out = { errore: String((err && err.message) || err) };\n  }\n  return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);\n}\n\nfunction leggi_(simboli) {\n  var out = {};\n  if (!simboli.length) return out;\n  var indirizzo = function (host, s) {\n    return 'https://' + host + '.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(s) + '?range=1y&interval=1d';\n  };\n  var risposte = UrlFetchApp.fetchAll(simboli.map(function (s) {\n    return { url: indirizzo('query1', s), muteHttpExceptions: true };\n  }));\n  simboli.forEach(function (s, i) {\n    var r = risposte[i];\n    if (r.getResponseCode() !== 200) {\n      try { r = UrlFetchApp.fetch(indirizzo('query2', s), { muteHttpExceptions: true }); } catch (e) { return; }\n    }\n    if (r.getResponseCode() !== 200) return;\n    try {\n      var c = JSON.parse(r.getContentText()).chart.result[0];\n      var meta = c.meta, tempi = c.timestamp || [], chiusure = (c.indicators.quote[0] || {}).close || [];\n      var p = meta.regularMarketPrice;\n      if (!(p > 0)) return;\n      var serie = [];\n      for (var k = 0; k < tempi.length; k++) if (chiusure[k] != null) serie.push([tempi[k], chiusure[k]]);\n      var ora = meta.regularMarketTime || Math.floor(Date.now() / 1000);\n      var ultimaPrimaDi = function (limite) {\n        var v = null;\n        for (var n = 0; n < serie.length; n++) { if (serie[n][0] < limite) v = serie[n][1]; else break; }\n        return v;\n      };\n      var perc = function (base) { return base > 0 ? Math.round((p / base - 1) * 10000) / 100 : null; };\n      var annoIntero = serie.length && serie[0][0] <= ora - 330 * 86400;\n      out[s] = {\n        p: p,\n        cur: meta.currency || 'EUR',\n        g: perc(ultimaPrimaDi(ora - (ora % 86400))),               // rispetto alla chiusura del giorno prima\n        m: perc(ultimaPrimaDi(ora - 30 * 86400)),\n        a: annoIntero ? perc(serie[0][1]) : null,\n        nome: meta.longName || meta.shortName || ''\n      };\n    } catch (e) {}\n  });\n  return out;\n}\n";
+function disegnaPonte(msg) {
+  const box = $('#yfBox'); if (!box) return;
+  box.innerHTML = ponte()
+    ? `<p>Collegato: i prezzi di ReesparmioFoil arrivano da Yahoo Finance attraverso il tuo script.</p>
+       <p class="btns"><button class="btn" data-act="ponte-prova">Prova con VWCE.DE</button><button class="btn quiet" data-act="ponte-via">Scollega</button></p><p class="muted" id="yfMsg" aria-live="polite">${esc(msg || '')}</p>`
+    : `<p>Un sito non può leggere Yahoo Finance direttamente: serve un piccolo script nel tuo account Google che lo fa al posto suo, come la funzione che usavi nel foglio. Si prepara una volta sola.</p>
+       <details class="guida" open><summary>Come si prepara (5 minuti)</summary>
+        <ol>
+          <li>Apri <a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com</a> e crea un nuovo progetto. Chiamalo, ad esempio, "Prezzi quaderno".</li>
+          <li>Cancella quello che c'è nell'editor, incolla il codice qui sotto e salva.</li>
+          <li>In alto a destra clicca <em>Deploy → New deployment</em>. Con l'ingranaggio scegli il tipo <em>Web app</em>.</li>
+          <li>Imposta <em>Execute as: Me</em> e <em>Who has access: Anyone</em>, poi clicca <em>Deploy</em>.</li>
+          <li>Google chiede di autorizzare lo script: accetta (all'avviso "app non verificata" si prosegue da <em>Advanced</em>).</li>
+          <li>Copia l'indirizzo <em>Web app URL</em> (finisce con <code>/exec</code>), incollalo qui sotto e salva.</li>
+        </ol>
+        <p class="btns"><button class="btn" data-act="ponte-copia">Copia il codice</button></p>
+        <textarea class="codice" id="yfCodice" readonly rows="8" spellcheck="false" aria-label="Codice dello script">${esc(CODICE_PONTE)}</textarea>
+        <p class="muted">Lo script fa una cosa sola: legge i prezzi da Yahoo Finance per i simboli che gli chiede il quaderno. Non vede i tuoi dati. Chi conosce l'indirizzo può chiedergli prezzi, niente altro.</p>
+       </details>
+       <form class="riga" id="fPonte"><input id="yfUrl" autocomplete="off" spellcheck="false" aria-label="Indirizzo dello script" placeholder="https://script.google.com/macros/s/…/exec"><button class="btn primary">Salva l'indirizzo</button></form><p class="muted" id="yfMsg" aria-live="polite">${esc(msg || '')}</p>`;
+}
+async function provaPonte(indirizzo) {
+  const j = await chiediPonte(['VWCE.DE'], indirizzo), z = j['VWCE.DE'];
+  if (!z || !(z.eur > 0)) throw new Error('lo script risponde, ma Yahoo Finance non ha dato il prezzo di VWCE.DE' + (z && z.err ? ' (' + z.err + ')' : ''));
+  return `Funziona: VWCE.DE vale ${NFP.format(z.eur)} €.`;
+}
 function vImpostazioni() {
   const temi = { auto: ['Come il sistema', ''], light: ['Chiaro', '#ecf1ea'], dark: ['Bosco', '#1b2420'], blu: ['Blu notte', '#101a31'], carbone: ['Carbone', '#1b1b1c'] };
   return `<header class="vh"><h1>Impostazioni</h1></header>${avvisoMemoria()}
   <section class="blk"><h2>Google Drive</h2><div id="drBox"></div></section>
+  <section class="blk"><h2>Prezzi da Yahoo Finance</h2><div id="yfBox"></div></section>
   <section class="blk"><h2>Backup automatici</h2>
     <p>Ogni mese, la prima volta che apri il quaderno dal giorno 15 in poi, una copia dei dati finisce nella cartella "backup" su Drive. Restano le tre più recenti; la più vecchia va nel cestino di Drive.</p>
     <div id="bkBox"></div>
@@ -2175,7 +2163,7 @@ function vImpostazioni() {
   </section>`;
 }
 function dopoImpostazioni() {
-  disegnaDrive();
+  disegnaDrive(); disegnaPonte();
   if (driveAttivo() && drStato !== 'scaduto') lavoro(async () => { if (!dr.backup) await struttura(); backupDrive = (await elencoBackup()).slice(0, 3); }, '').then(() => disegnaDrive());
 }
 
@@ -2189,6 +2177,16 @@ Object.assign(azioni, {
     try { if (dr.token && window.google) google.accounts.oauth2.revoke(dr.token, () => {}); } catch (e) {}
     dr = Object.assign({}, DR0); salvaDr(); backupDrive = null; stato('ok'); disegna();
   },
+  'ponte-copia': async () => {
+    try { await navigator.clipboard.writeText(CODICE_PONTE); avviso('Codice copiato'); }
+    catch (e) { const t = $('#yfCodice'); t.focus(); t.select(); avviso('Seleziona il codice e copialo con Ctrl+C'); }
+  },
+  'ponte-prova': async b => {
+    b.disabled = true; $('#yfMsg').textContent = 'Chiedo un prezzo a Yahoo Finance…';
+    let msg; try { msg = await provaPonte(); } catch (e) { msg = 'Non va: ' + e.message + '.'; }
+    disegnaPonte(msg);
+  },
+  'ponte-via': () => { db.inv.ponte = ''; salva(); disegnaPonte(); },
   'cid-cambia': () => { try { localStorage.removeItem(CK); } catch (e) {} disegna(); },
   'backup-ripristina': async b => {
     const f = (backupDrive || []).find(x => x.id === b.dataset.id); if (!f) return;
@@ -2202,6 +2200,15 @@ Object.assign(azioni, {
   },
   'scarto-scarica': () => { const s = leggiLocale(SCARTO, null); if (s && s.dati) scarica(`quaderno-morbido-scartato-${isoGiorno(new Date(s.quando))}.json`, JSON.stringify(s.dati, null, 2), 'application/json'); },
   'scarto-via': () => { try { localStorage.removeItem(SCARTO); } catch (e) {} disegnaDrive(); }
+});
+document.addEventListener('submit', async e => {
+  if (e.target.id !== 'fPonte') return;
+  e.preventDefault();
+  const v = $('#yfUrl').value.trim(), m = $('#yfMsg');
+  if (!PONTE_OK.test(v)) { m.textContent = 'Non sembra l\'indirizzo giusto: comincia con https://script.google.com/macros/s/ e finisce con /exec.'; return; }
+  m.textContent = 'Provo l\'indirizzo…';
+  try { const msg = await provaPonte(v); db.inv.ponte = v; salva(); disegnaPonte(msg); }
+  catch (err) { m.textContent = 'Non va: ' + err.message + '.'; }
 });
 document.addEventListener('submit', e => {
   if (e.target.id !== 'fCid') return;
